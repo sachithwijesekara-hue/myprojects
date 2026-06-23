@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BHRL HRIS Implementation Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+:root{
+  --bg-0:#07111f;
+  --bg-1:#101827;
+  --bg-2:#0c1622;
+  --card:rgba(255,255,255,0.045);
+  --card-border:rgba(255,255,255,0.09);
+  --card-hover:rgba(255,255,255,0.07);
+  --text-0:#eef2f8;
+  --text-1:#aab6c8;
+  --text-2:#6e7c93;
+  --green:#27d39a;
+  --green-soft:rgba(39,211,154,0.15);
+  --blue:#3aa6ff;
+  --blue-soft:rgba(58,166,255,0.15);
+  --orange:#ff9f43;
+  --orange-soft:rgba(255,159,67,0.15);
+  --gray:#5b6678;
+  --gray-soft:rgba(91,102,120,0.18);
+  --red:#ff5c7a;
+  --red-soft:rgba(255,92,122,0.15);
+  --purple:#9a7bff;
+  --radius-lg:20px;
+  --radius-md:14px;
+  --radius-sm:10px;
+  --shadow:0 8px 32px rgba(0,0,0,0.35);
+}
+[data-theme="light"]{
+  --bg-0:#eef1f6;
+  --bg-1:#f7f9fc;
+  --bg-2:#e6e9f0;
+  --card:rgba(255,255,255,0.75);
+  --card-border:rgba(20,30,50,0.08);
+  --card-hover:rgba(255,255,255,0.95);
+  --text-0:#11192a;
+  --text-1:#46546b;
+  --text-2:#7a8699;
+  --shadow:0 8px 32px rgba(20,30,60,0.08);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Poppins',sans-serif;
+  background:radial-gradient(circle at 15% 0%, #0d2236 0%, var(--bg-0) 45%) fixed, linear-gradient(165deg,var(--bg-0),var(--bg-1));
+  color:var(--text-0);
+  min-height:100vh;
+  transition:background .4s ease,color .4s ease;
+  overflow-x:hidden;
+}
+.mono{font-family:'JetBrains Mono',monospace;}
+::-webkit-scrollbar{width:9px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:10px;}
+
+/* ===== Loader ===== */
+#loader{
+  position:fixed;inset:0;background:var(--bg-0);z-index:9999;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;
+  transition:opacity .6s ease, visibility .6s ease;
+}
+#loader.hide{opacity:0;visibility:hidden;}
+.loader-ring{
+  width:64px;height:64px;border-radius:50%;
+  border:4px solid rgba(255,255,255,.08);
+  border-top-color:var(--green);
+  animation:spin 0.9s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loader-text{color:var(--text-1);font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;}
+
+/* ===== Navbar ===== */
+.navbar-glass{
+  background:rgba(7,17,31,.72);
+  backdrop-filter:blur(18px) saturate(140%);
+  border-bottom:1px solid var(--card-border);
+  position:sticky;top:0;z-index:1000;
+  padding:.75rem 1.5rem;
+}
+[data-theme="light"] .navbar-glass{background:rgba(255,255,255,.7);}
+.brand-mark{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--green),var(--blue));
+  display:flex;align-items:center;justify-content:center;color:#06121f;font-weight:800;font-size:1rem;
+  box-shadow:0 0 18px rgba(39,211,154,.35);
+}
+.brand-title{font-weight:700;font-size:1.05rem;letter-spacing:.01em;color:var(--text-0);}
+.brand-sub{font-size:.72rem;color:var(--text-2);letter-spacing:.04em;}
+.nav-btn{
+  background:var(--card);border:1px solid var(--card-border);color:var(--text-0);
+  border-radius:10px;padding:.45rem .8rem;font-size:.82rem;font-weight:500;
+  transition:all .2s ease;display:inline-flex;align-items:center;gap:.4rem;
+}
+.nav-btn:hover{background:var(--card-hover);transform:translateY(-1px);color:var(--text-0);}
+.live-clock{font-size:.78rem;color:var(--text-1);}
+
+/* ===== Layout ===== */
+.section-pad{padding:2.4rem 0;}
+.eyebrow{
+  font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green);font-weight:600;
+}
+.section-title{font-size:1.5rem;font-weight:700;color:var(--text-0);margin-top:.25rem;}
+.section-desc{color:var(--text-2);font-size:.88rem;}
+
+/* ===== Cards ===== */
+.glass-card{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(14px);
+  transition:transform .25s ease, background .25s ease, border-color .25s ease;
+}
+.glass-card:hover{transform:translateY(-3px);background:var(--card-hover);}
+
+/* ===== KPI cards ===== */
+.kpi-card{
+  padding:1.4rem 1.5rem;position:relative;overflow:hidden;height:100%;
+}
+.kpi-card .glow{
+  position:absolute;width:140px;height:140px;border-radius:50%;
+  filter:blur(40px);opacity:.35;top:-40px;right:-40px;
+}
+.kpi-label{font-size:.74rem;color:var(--text-2);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+.kpi-value{font-size:1.9rem;font-weight:800;margin:.15rem 0;}
+.kpi-meta{font-size:.78rem;color:var(--text-1);}
+.kpi-icon{
+  width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+
+/* progress ring */
+.ring-wrap{position:relative;width:84px;height:84px;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:rgba(255,255,255,.08);stroke-width:8;}
+.ring-fg{fill:none;stroke:var(--green);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1);}
+.ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.05rem;}
+
+/* ===== Timeline ===== */
+.vtimeline{position:relative;padding-left:2.6rem;}
+.vtimeline::before{
+  content:'';position:absolute;left:14px;top:6px;bottom:6px;width:2px;
+  background:linear-gradient(180deg,var(--green),var(--blue),var(--gray));
+}
+.tl-item{position:relative;margin-bottom:1.6rem;padding:1rem 1.2rem;border-radius:var(--radius-md);}
+.tl-dot{
+  position:absolute;left:-2.6rem;top:1.1rem;width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.7rem;border:2px solid var(--bg-0);
+}
+.tl-item.done .tl-dot{background:var(--green);color:#06241a;}
+.tl-item.current .tl-dot{background:var(--blue);color:#06121f;animation:pulse 1.8s infinite;}
+.tl-item.pending .tl-dot{background:var(--gray);color:#eef2f8;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(58,166,255,.55);}70%{box-shadow:0 0 0 12px rgba(58,166,255,0);}100%{box-shadow:0 0 0 0 rgba(58,166,255,0);}}
+.tl-item.done{border-left:3px solid var(--green);}
+.tl-item.current{border-left:3px solid var(--blue);}
+.tl-item.pending{border-left:3px solid var(--gray);}
+.tl-title{font-weight:600;font-size:.95rem;}
+.tl-meta{font-size:.78rem;color:var(--text-2);}
+.status-chip{font-size:.68rem;padding:.18rem .6rem;border-radius:20px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;}
+.chip-done{background:var(--green-soft);color:var(--green);}
+.chip-current{background:var(--blue-soft);color:var(--blue);}
+.chip-pending{background:var(--gray-soft);color:var(--text-1);}
+
+/* ===== Milestone cards ===== */
+.ms-card{padding:1.3rem 1.4rem;cursor:pointer;height:100%;}
+.ms-weight{font-size:1.6rem;font-weight:800;}
+.progressbar-track{height:7px;background:rgba(255,255,255,.08);border-radius:10px;overflow:hidden;}
+.progressbar-fill{height:100%;border-radius:10px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+
+/* ===== Accordion override ===== */
+.accordion-item{background:transparent;border:1px solid var(--card-border);border-radius:var(--radius-md)!important;margin-bottom:.6rem;overflow:hidden;}
+.accordion-button{background:var(--card);color:var(--text-0);font-weight:600;font-size:.9rem;}
+.accordion-button:not(.collapsed){background:var(--card-hover);color:var(--green);}
+.accordion-button:focus{box-shadow:none;}
+.accordion-button::after{filter:invert(1);}
+[data-theme="light"] .accordion-button::after{filter:none;}
+.accordion-body{background:rgba(255,255,255,.02);font-size:.85rem;color:var(--text-1);}
+.accordion-body ul{margin-bottom:0;padding-left:1.2rem;}
+.accordion-body li{margin-bottom:.3rem;}
+
+/* ===== Search highlight ===== */
+mark{background:var(--orange);color:#1a1300;padding:0 2px;border-radius:3px;}
+
+/* ===== Gantt ===== */
+.gantt-wrap{overflow-x:auto;}
+.gantt-grid{min-width:1100px;}
+.gantt-row{display:grid;grid-template-columns:230px 1fr;align-items:center;border-bottom:1px solid var(--card-border);padding:.5rem 0;}
+.gantt-label{font-size:.82rem;color:var(--text-1);padding-right:1rem;}
+.gantt-track{position:relative;height:26px;background:rgba(255,255,255,.04);border-radius:6px;}
+.gantt-bar{position:absolute;top:3px;height:20px;border-radius:6px;cursor:pointer;transition:filter .2s;}
+.gantt-bar:hover{filter:brightness(1.25);}
+.gantt-months{display:grid;grid-template-columns:230px 1fr;margin-bottom:.4rem;}
+.gantt-month-track{display:grid;grid-template-columns:repeat(18,1fr);font-size:.68rem;color:var(--text-2);text-align:center;}
+
+/* ===== Tables ===== */
+.table-glass{color:var(--text-1);}
+.table-glass thead th{color:var(--text-2);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--card-border);font-weight:600;}
+.table-glass td,.table-glass th{border-color:var(--card-border);vertical-align:middle;font-size:.85rem;}
+.badge-risk-high{background:var(--red-soft);color:var(--red);}
+.badge-risk-med{background:var(--orange-soft);color:var(--orange);}
+.badge-risk-low{background:var(--green-soft);color:var(--green);}
+
+/* ===== Buttons ===== */
+.btn-accent{background:linear-gradient(135deg,var(--green),#1fb389);border:none;color:#06241a;font-weight:600;border-radius:10px;}
+.btn-accent:hover{filter:brightness(1.08);color:#06241a;}
+.btn-outline-glass{background:var(--card);border:1px solid var(--card-border);color:var(--text-0);border-radius:10px;}
+.btn-outline-glass:hover{background:var(--card-hover);color:var(--text-0);}
+
+/* back to top */
+#backTop{
+  position:fixed;bottom:24px;right:24px;width:46px;height:46px;border-radius:50%;
+  background:var(--green);color:#06241a;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 20px rgba(39,211,154,.4);opacity:0;visibility:hidden;transition:all .3s ease;z-index:900;border:none;
+}
+#backTop.show{opacity:1;visibility:visible;}
+
+.search-box{
+  background:var(--card);border:1px solid var(--card-border);border-radius:12px;
+  padding:.65rem 1rem;color:var(--text-0);width:100%;
+}
+.search-box::placeholder{color:var(--text-2);}
+.search-box:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(39,211,154,.12);}
+
+.stat-mini{padding:1rem;border-radius:var(--radius-md);text-align:center;}
+.countdown-num{font-size:1.7rem;font-weight:800;color:var(--orange);}
+.countdown-label{font-size:.68rem;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em;}
+
+footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-border);}
+
+.fade-up{animation:fadeUp .6s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+@media print{
+  .no-print{display:none!important;}
+  body{background:#fff;color:#000;}
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-ring"></div>
+  <div class="loader-text">Loading BHRL HRIS Dashboard…</div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar-glass no-print">
+  <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div class="d-flex align-items-center gap-2">
+      <div class="brand-mark">B</div>
+      <div>
+        <div class="brand-title">BHRL HRIS Implementation Dashboard</div>
+        <div class="brand-sub">Serendib Leisure Management Ltd · PeoplesHR by hSenid</div>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <span class="live-clock mono" id="liveClock"></span>
+      <button class="nav-btn" id="exportPdfBtn"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+      <button class="nav-btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+      <button class="nav-btn" id="themeToggle"><i class="fa-solid fa-moon"></i> Dark Mode</button>
+      <button class="nav-btn" id="fullScreenBtn"><i class="fa-solid fa-expand"></i> Full Screen</button>
+    </div>
+  </div>
+</nav>
+
+<div id="dashboardRoot" class="container-fluid px-3 px-lg-4">
+
+  <!-- EXECUTIVE DASHBOARD -->
+  <section class="section-pad">
+    <div class="eyebrow">Executive Overview</div>
+    <div class="section-title">Project Health at a Glance</div>
+    <div class="section-desc mb-3">BHRL HRIS Implementation Project · 03 Mar 2025 – 21 Aug 2026</div>
+
+    <div class="row g-3">
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="glass-card kpi-card fade-up">
+          <div class="glow" style="background:var(--green);"></div>
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div class="kpi-label">Overall Progress</div>
+              <div class="kpi-value" style="color:var(--green);" id="overallProgressNum">0%</div>
+              <div class="kpi-meta">On track · UAT in progress</div>
+            </div>
+            <div class="ring-wrap">
+              <svg width="84" height="84" viewBox="0 0 84 84">
+                <circle class="ring-bg" cx="42" cy="42" r="36"></circle>
+                <circle class="ring-fg" id="progressRing" cx="42" cy="42" r="36" stroke-dasharray="226" stroke-dashoffset="226"></circle>
+              </svg>
+              <div class="ring-num" style="color:var(--green);">65%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="glass-card kpi-card fade-up" style="animation-delay:.05s;">
+          <div class="glow" style="background:var(--blue);"></div>
+          <div class="kpi-icon mb-2" style="background:var(--blue-soft);color:var(--blue);"><i class="fa-solid fa-vial"></i></div>
+          <div class="kpi-label">Current Phase</div>
+          <div class="kpi-value" style="color:var(--blue);font-size:1.2rem;">User Acceptance Testing</div>
+          <div class="kpi-meta">23 Jun 2026 – 24 Jul 2026</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="glass-card kpi-card fade-up" style="animation-delay:.1s;">
+          <div class="glow" style="background:var(--purple);"></div>
+          <div class="kpi-icon mb-2" style="background:rgba(154,123,255,.15);color:var(--purple);"><i class="fa-solid fa-flag-checkered"></i></div>
+          <div class="kpi-label">Project Start</div>
+          <div class="kpi-value" style="color:var(--purple);font-size:1.3rem;">03 Mar 2025</div>
+          <div class="kpi-meta" id="daysSinceStart">— days since kick-off</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="glass-card kpi-card fade-up" style="animation-delay:.15s;">
+          <div class="glow" style="background:var(--orange);"></div>
+          <div class="kpi-icon mb-2" style="background:var(--orange-soft);color:var(--orange);"><i class="fa-solid fa-rocket"></i></div>
+          <div class="kpi-label">Go Live Date</div>
+          <div class="kpi-value" style="color:var(--orange);font-size:1.3rem;">03 Aug 2026</div>
+          <div class="kpi-meta" id="countdownGoLive">— days remaining</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- mini stats + countdown -->
+    <div class="row g-3 mt-3">
+      <div class="col-6 col-md-3"><div class="glass-card stat-mini"><div class="countdown-num" id="cdDays">0</div><div class="countdown-label">Days</div></div></div>
+      <div class="col-6 col-md-3"><div class="glass-card stat-mini"><div class="countdown-num" id="cdHours">0</div><div class="countdown-label">Hours</div></div></div>
+      <div class="col-6 col-md-3"><div class="glass-card stat-mini"><div class="countdown-num" id="cdMins">0</div><div class="countdown-label">Minutes</div></div></div>
+      <div class="col-6 col-md-3"><div class="glass-card stat-mini"><div class="countdown-num" id="cdSecs">0</div><div class="countdown-label">Seconds to Go-Live</div></div></div>
+    </div>
+  </section>
+
+  <!-- SEARCH -->
+  <section class="section-pad pt-0 no-print">
+    <div class="glass-card p-3">
+      <div class="d-flex align-items-center gap-2">
+        <i class="fa-solid fa-magnifying-glass text-secondary"></i>
+        <input type="text" id="globalSearch" class="search-box" placeholder="Search activities, milestones, or dates… e.g. 'Payroll', 'UAT', '26/05/2026'">
+      </div>
+      <div id="searchResults" class="mt-2"></div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="section-pad">
+    <div class="eyebrow">Roadmap</div>
+    <div class="section-title">Project Timeline</div>
+    <div class="row mt-3">
+      <div class="col-lg-7">
+        <div class="vtimeline searchable" id="timelineWrap"></div>
+      </div>
+      <div class="col-lg-5">
+        <div class="glass-card p-3 h-100">
+          <h6 class="mb-3"><i class="fa-solid fa-chart-pie me-2" style="color:var(--green);"></i>Weight Distribution</h6>
+          <canvas id="weightPie" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHARTS ROW -->
+  <section class="section-pad pt-0">
+    <div class="row g-3">
+      <div class="col-lg-4">
+        <div class="glass-card p-3 h-100">
+          <h6 class="mb-3"><i class="fa-solid fa-circle-notch me-2" style="color:var(--green);"></i>Overall Completion</h6>
+          <canvas id="completionDoughnut" height="230"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="glass-card p-3 h-100">
+          <h6 class="mb-3"><i class="fa-solid fa-bars-progress me-2" style="color:var(--blue);"></i>Milestone Progress</h6>
+          <canvas id="progressBarChart" height="230"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MILESTONE CARDS -->
+  <section class="section-pad">
+    <div class="eyebrow">Delivery Milestones</div>
+    <div class="section-title">Milestone Breakdown</div>
+    <div class="row g-3 mt-2" id="milestoneCardWrap"></div>
+  </section>
+
+  <!-- WORKSHOPS ACCORDION -->
+  <section class="section-pad pt-0">
+    <div class="glass-card p-3 p-md-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+          <span class="status-chip chip-done">Completed</span>
+          <h5 class="d-inline ms-2 mb-0">4. Workshops &amp; Configuration</h5>
+        </div>
+        <div class="kpi-meta">Weight 25% · 25/05/2026 – 19/06/2026</div>
+      </div>
+      <div class="accordion searchable" id="workshopAccordion"></div>
+    </div>
+  </section>
+
+  <!-- UAT ACCORDION -->
+  <section class="section-pad pt-0">
+    <div class="glass-card p-3 p-md-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+          <span class="status-chip chip-current">Current Phase</span>
+          <h5 class="d-inline ms-2 mb-0">5. User Acceptance Testing (UAT)</h5>
+        </div>
+        <div class="kpi-meta">Weight 15% · 23/06/2026 – 24/07/2026</div>
+      </div>
+      <div class="accordion searchable" id="uatAccordion"></div>
+    </div>
+  </section>
+
+  <!-- MASTER GANTT -->
+  <section class="section-pad pt-0">
+    <div class="eyebrow">Schedule</div>
+    <div class="section-title">Master Timeline — Mar 2025 to Aug 2026</div>
+    <div class="section-desc mb-2">Full project span from original kick-off, including the slippage between Cost Finalization and Data Preparation.</div>
+    <div class="glass-card p-3 mt-2">
+      <div class="gantt-wrap">
+        <div class="gantt-grid" id="masterGanttGrid"></div>
+      </div>
+      <div class="d-flex gap-3 mt-3 flex-wrap">
+        <span class="kpi-meta"><span style="display:inline-block;width:10px;height:10px;background:var(--green);border-radius:3px;margin-right:5px;"></span>Completed</span>
+        <span class="kpi-meta"><span style="display:inline-block;width:10px;height:10px;background:var(--blue);border-radius:3px;margin-right:5px;"></span>Current</span>
+        <span class="kpi-meta"><span style="display:inline-block;width:10px;height:10px;background:var(--gray);border-radius:3px;margin-right:5px;"></span>Pending</span>
+        <span class="kpi-meta"><span style="display:inline-block;width:10px;height:10px;background:repeating-linear-gradient(45deg,var(--red),var(--red) 3px,transparent 3px,transparent 6px);border-radius:3px;margin-right:5px;border:1px solid var(--red);"></span>Delay / Idle Gap</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- DELAY CALLOUT -->
+  <section class="section-pad pt-0">
+    <div class="glass-card p-3 p-md-4" style="border-left:3px solid var(--red);">
+      <div class="d-flex align-items-start gap-3 flex-wrap">
+        <div class="kpi-icon" style="background:var(--red-soft);color:var(--red);flex-shrink:0;"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        <div>
+          <h6 class="mb-1">Schedule Slippage Identified</h6>
+          <div class="kpi-meta">Cost Finalization closed on <strong>26 Feb 2026</strong>, but Data Preparation (project re-kick-off) only began on <strong>30 Apr 2026</strong> — an idle gap of <strong id="delayDaysNum">63 days</strong> between commercial closure and execution start. This gap is highlighted in red on the master timeline above and has pushed the original Go-Live target out accordingly.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DETAILED EXECUTION GANTT -->
+  <section class="section-pad pt-0">
+    <div class="eyebrow">Detailed Schedule</div>
+    <div class="section-title">Execution Phase — Apr 2026 to Aug 2026</div>
+    <div class="section-desc mb-2">Task-level breakdown from the implementation schedule (PeoplesHR project plan).</div>
+    <div class="glass-card p-3 mt-2">
+      <div class="gantt-wrap">
+        <div class="gantt-grid" id="ganttGrid"></div>
+      </div>
+      <div class="d-flex gap-3 mt-3 flex-wrap">
+        <span class="kpi-meta"><span style="display:inline-block;width:10px;height:10px;background:var(--green);border-radius:3px;margin-right:5px;"></span>Completed</span>
+        <span class="kpi-meta"><span style="display:inline-block;width:10px;height:10px;background:var(--blue);border-radius:3px;margin-right:5px;"></span>Current</span>
+        <span class="kpi-meta"><span style="display:inline-block;width:10px;height:10px;background:var(--gray);border-radius:3px;margin-right:5px;"></span>Pending</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- RISK / ISSUE / DEPENDENCY TABLES -->
+  <section class="section-pad pt-0">
+    <div class="row g-3">
+      <div class="col-lg-4">
+        <div class="glass-card p-3 h-100">
+          <h6 class="mb-3"><i class="fa-solid fa-triangle-exclamation me-2" style="color:var(--red);"></i>Risk Register</h6>
+          <div class="table-responsive"><table class="table table-glass mb-0">
+            <thead><tr><th>Risk</th><th>Impact</th></tr></thead>
+            <tbody>
+              <tr><td>Master data quality &amp; cleansing delays</td><td><span class="badge badge-risk-med px-2 py-1 rounded-pill">Medium</span></td></tr>
+              <tr><td>Payroll parallel run discrepancies</td><td><span class="badge badge-risk-high px-2 py-1 rounded-pill">High</span></td></tr>
+              <tr><td>End-user availability during UAT</td><td><span class="badge badge-risk-med px-2 py-1 rounded-pill">Medium</span></td></tr>
+              <tr><td>Clock machine integration delays</td><td><span class="badge badge-risk-low px-2 py-1 rounded-pill">Low</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="glass-card p-3 h-100">
+          <h6 class="mb-3"><i class="fa-solid fa-bug me-2" style="color:var(--orange);"></i>Issue Tracker</h6>
+          <div class="table-responsive"><table class="table table-glass mb-0">
+            <thead><tr><th>Issue</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Reporting hierarchy mismatch (EIM)</td><td><span class="status-chip chip-current">In Progress</span></td></tr>
+              <tr><td>Roster schedule edge cases</td><td><span class="status-chip chip-pending">Open</span></td></tr>
+              <tr><td>OT approval workflow validation</td><td><span class="status-chip chip-done">Resolved</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="glass-card p-3 h-100">
+          <h6 class="mb-3"><i class="fa-solid fa-diagram-project me-2" style="color:var(--purple);"></i>Dependencies</h6>
+          <div class="table-responsive"><table class="table table-glass mb-0">
+            <thead><tr><th>Item</th><th>Depends On</th></tr></thead>
+            <tbody>
+              <tr><td>EIM Live Run / UAT</td><td>Module configuration sign-off</td></tr>
+              <tr><td>Leave &amp; Attendance UAT</td><td>Clock machine data download config</td></tr>
+              <tr><td>Go Live</td><td>UAT sign-off, Final acceptance</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESENTATION MODE TOGGLE -->
+  <section class="section-pad pt-0 text-center no-print">
+    <button class="btn btn-outline-glass px-4 py-2" id="presentModeBtn"><i class="fa-solid fa-display me-2"></i>Presentation Mode</button>
+  </section>
+
+</div>
+
+<footer class="text-center py-4">
+  Designed &amp; Developed by Sachith Wijesekara · Powered by ImaginaryEyeTech © 2026 Human Management. All rights reserved.
+</footer>
+
+<button id="backTop" class="no-print"><i class="fa-solid fa-arrow-up"></i></button>
+
+<!-- MODAL -->
+<div class="modal fade" id="milestoneModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="background:var(--bg-1);border:1px solid var(--card-border);border-radius:var(--radius-lg);">
+      <div class="modal-header" style="border-color:var(--card-border);">
+        <h5 class="modal-title" id="modalTitle"></h5>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer" style="border-color:var(--card-border);">
+        <button class="btn btn-accent" id="modalExportBtn"><i class="fa-solid fa-file-pdf me-2"></i>Export this milestone</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============== DATA ============== */
+const MILESTONES = [
+  {id:1,name:"Pre-Implementation Activities",weight:10,start:"2025-03-03",end:"2025-07-16",status:"done",progress:100,
+   activities:["Initial discussions with management","Requirement clarification sessions","Current process study","Solution presentations","Module demonstrations","Gap analysis discussions","Scope definition"]},
+  {id:2,name:"Cost Finalization",weight:10,start:"2025-07-17",end:"2026-02-26",status:"done",progress:100,
+   activities:["Database finalization","User count validation","Quotation submission","Commercial discussions","Revised quotation approval","PO approval","Delivery order","Contract finalization"]},
+  {id:3,name:"Data Preparation",weight:20,start:"2026-04-30",end:"2026-05-22",status:"done",progress:100,
+   activities:["Project kick-off","Project team formation","System installation","Environment setup","Company parameter setup","Master data collection and cleansing","Employee data upload","Organizational structure finalization","Grading structure finalization","Department and designation mapping"]},
+  {id:4,name:"Workshops & Configuration",weight:25,start:"2026-05-23",end:"2026-06-19",status:"done",progress:100,
+   activities:["Employee Information Management workshop","Employee Life Cycle workshop","Leave Management workshop","Attendance Management workshop","Probation & Contract Evaluation workshop","Workflow and approval hierarchy discussions","User role and security setup","Letter template setup","Organization structure configuration","Grade and designation configuration","Shift and roster configuration","Dashboard and report configuration","Mobile App configuration","Business process validation sessions","Configuration sign-off"]},
+  {id:5,name:"User Acceptance Testing (UAT)",weight:15,start:"2026-06-23",end:"2026-07-24",status:"current",progress:35,
+   activities:["UAT plan preparation","Test scenario preparation","Employee Information Management testing","Employee Life Cycle testing","Leave Management testing","Attendance Management testing","Probation Evaluation testing","Workflow testing","Approval hierarchy validation","ESS and MSS testing","Mobile App testing","Letter generation validation","Report validation","Issue logging","Defect fixing","Retesting","User sign-off","Final UAT sign-off"]},
+  {id:6,name:"Go Live",weight:10,start:"2026-08-03",end:"2026-08-03",status:"pending",progress:0,
+   activities:["Production environment preparation","Data migration validation","Final parameter verification","User account activation","Production deployment","Go-live support"]},
+  {id:7,name:"Live Training & Feedback",weight:10,start:"2026-08-04",end:"2026-08-21",status:"pending",progress:0,
+   activities:["End-user training","User manuals","Hypercare support","Incident handling","Feedback collection","Process improvements","Final system acceptance","Project closure"]}
+];
+
+const WORKSHOPS = [
+  {date:"25 May 2026", title:"Workshop 1", items:["Employee Information Manager","Organization Chart","Employee Self Service","Employee Life Cycle","Mobile Application"]},
+  {date:"26 May 2026", title:"Workshop 2 – 5", items:["Time & Attendance","Absence Management","Payroll Management","Report Navigator, On Demand Reporting, Template Designer"]},
+  {date:"29 May 2026", title:"Workshop 6 & 7", items:["Performance Management","Probation Evaluation"]},
+  {date:"02 Jun 2026", title:"Blueprint Sharing", items:["Sharing of consolidated blueprint document with project team"]},
+  {date:"04 Jun 2026", title:"Functional Design Sign-off", items:["Formal sign-off of the functional design blueprint"]},
+  {date:"05 – 19 Jun 2026", title:"Module Configuration", items:["Module configuration according to the approved blueprint"]}
+];
+
+const UAT_SECTIONS = [
+  {date:"23 – 25 Jun 2026", title:"EIM Live Run / UAT", items:["Employee Information Manager","Organization Chart","Employee Life Cycle","Personal data verification","Job related data verification (Banks, Branches, Cost Centers, Salary Grades, Corporate Titles)","OT approvals","Leave approvals","Reporting hierarchy validation","Assign supervisors and subordinates","Company hierarchy validation"]},
+  {date:"30 Jun – 09 Jul 2026", title:"Leave & Attendance UAT", items:["Time & Attendance","Roster groups","Roster schedules","Shift setup","Absence Management","Annual Leave","Casual Leave","Medical Leave","Maternity Leave","Authorized No-Pay Leave","No-Pay Leave","Short Leave entitlements","Reports verification"]},
+  {date:"10 – 13 Jul 2026", title:"Performance Management UAT", items:["Performance Management Module UAT","Probation Evaluation Module UAT"]},
+  {date:"14 – 24 Jul 2026", title:"Payroll Parallel Run", items:["June payroll test run","Reports verification","Finalization"]},
+  {date:"14 – 16 Jul 2026", title:"Other Modules UAT", items:["Mobile Application","Employee Self Service","On-Demand Reporting","Report Navigator"]},
+  {date:"27 Jul 2026", title:"UAT Sign-Off", items:["Final UAT sign-off by all module owners and project management"]}
+];
+
+const GANTT_TASKS = [
+  {name:"Project Kick Off", start:"2026-04-30", end:"2026-04-30", status:"done"},
+  {name:"System Installation & Config", start:"2026-05-05", end:"2026-05-19", status:"done"},
+  {name:"Master Data Upload", start:"2026-05-07", end:"2026-05-21", status:"done"},
+  {name:"Module Workshops", start:"2026-05-25", end:"2026-06-19", status:"done"},
+  {name:"EIM Live Run / UAT", start:"2026-06-23", end:"2026-06-25", status:"current"},
+  {name:"Leave & Attendance UAT", start:"2026-06-30", end:"2026-07-09", status:"current"},
+  {name:"Performance & Probation UAT", start:"2026-07-10", end:"2026-07-13", status:"current"},
+  {name:"Payroll Parallel Run / UAT", start:"2026-07-14", end:"2026-07-24", status:"current"},
+  {name:"Other Modules UAT", start:"2026-07-14", end:"2026-07-16", status:"current"},
+  {name:"UAT Sign-off", start:"2026-07-27", end:"2026-07-27", status:"pending"},
+  {name:"Final Acceptance", start:"2026-07-28", end:"2026-07-31", status:"pending"},
+  {name:"Go Live", start:"2026-08-03", end:"2026-08-03", status:"pending"},
+  {name:"Support Transfer & Closure", start:"2026-08-17", end:"2026-08-21", status:"pending"}
+];
+
+const STATUS_COLOR = {done:"var(--green)", current:"var(--blue)", pending:"var(--gray)"};
+const STATUS_LABEL = {done:"Completed", current:"Current", pending:"Pending"};
+
+/* Identified idle/delay gap between commercial closure and execution re-kick-off */
+const DELAY_GAP = {start:"2026-02-26", end:"2026-04-30"};
+function daysBetween(a,b){ return Math.round((new Date(b)-new Date(a))/86400000); }
+
+/* ============== UTIL ============== */
+function fmt(d){
+  const dt = new Date(d+"T00:00:00");
+  return dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+/* ============== LOADER ============== */
+window.addEventListener('load', ()=>{
+  setTimeout(()=>document.getElementById('loader').classList.add('hide'), 500);
+});
+
+/* ============== CLOCK ============== */
+function tickClock(){
+  const now = new Date();
+  document.getElementById('liveClock').textContent = now.toLocaleString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(tickClock,1000); tickClock();
+
+/* ============== COUNTDOWN ============== */
+const goLive = new Date("2026-08-03T00:00:00");
+const projectStart = new Date("2025-03-03T00:00:00");
+function tickCountdown(){
+  const now = new Date();
+  let diff = goLive - now;
+  const daysSince = Math.max(0,Math.floor((now-projectStart)/86400000));
+  document.getElementById('daysSinceStart').textContent = daysSince+" days since kick-off";
+  if(diff<=0){
+    document.getElementById('cdDays').textContent='0';document.getElementById('cdHours').textContent='0';
+    document.getElementById('cdMins').textContent='0';document.getElementById('cdSecs').textContent='0';
+    document.getElementById('countdownGoLive').textContent='Go-Live reached';
+    return;
+  }
+  const d = Math.floor(diff/86400000); diff-=d*86400000;
+  const h = Math.floor(diff/3600000); diff-=h*3600000;
+  const m = Math.floor(diff/60000); diff-=m*60000;
+  const s = Math.floor(diff/1000);
+  document.getElementById('cdDays').textContent=d;
+  document.getElementById('cdHours').textContent=h;
+  document.getElementById('cdMins').textContent=m;
+  document.getElementById('cdSecs').textContent=s;
+  document.getElementById('countdownGoLive').textContent=d+" days remaining";
+}
+setInterval(tickCountdown,1000); tickCountdown();
+document.getElementById('delayDaysNum').textContent = daysBetween(DELAY_GAP.start, DELAY_GAP.end) + " days";
+
+/* ============== ANIMATED COUNTER / RING ============== */
+function animateCounter(el,target,suffix=''){
+  let cur=0; const step=Math.max(1,target/40);
+  const t=setInterval(()=>{cur+=step; if(cur>=target){cur=target;clearInterval(t);} el.textContent=Math.round(cur)+suffix;},25);
+}
+animateCounter(document.getElementById('overallProgressNum'),65,'%');
+const ring = document.getElementById('progressRing');
+const circumference = 2*Math.PI*36;
+ring.setAttribute('stroke-dasharray', circumference);
+setTimeout(()=>{ ring.style.strokeDashoffset = circumference - (circumference*0.65); },300);
+
+/* ============== TIMELINE RENDER ============== */
+const timelineWrap = document.getElementById('timelineWrap');
+MILESTONES.forEach(m=>{
+  const div = document.createElement('div');
+  div.className = `tl-item glass-card ${m.status}`;
+  div.dataset.search = (m.name+" "+m.activities.join(" ")+" "+fmt(m.start)+" "+fmt(m.end)).toLowerCase();
+  div.innerHTML = `
+    <div class="tl-dot"><i class="fa-solid ${m.status==='done'?'fa-check':m.status==='current'?'fa-spinner':'fa-clock'}"></i></div>
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+      <div>
+        <div class="tl-title">${m.id}. ${m.name}</div>
+        <div class="tl-meta">${fmt(m.start)} – ${fmt(m.end)} · Weight ${m.weight}%</div>
+      </div>
+      <span class="status-chip chip-${m.status==='done'?'done':m.status==='current'?'current':'pending'}">${STATUS_LABEL[m.status]}</span>
+    </div>`;
+  timelineWrap.appendChild(div);
+});
+
+/* ============== MILESTONE CARDS ============== */
+const msWrap = document.getElementById('milestoneCardWrap');
+MILESTONES.forEach(m=>{
+  const col = document.createElement('div');
+  col.className = "col-12 col-md-6 col-lg-4";
+  col.innerHTML = `
+    <div class="glass-card ms-card" data-bs-toggle="modal" data-bs-target="#milestoneModal" data-id="${m.id}">
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div>
+          <div class="kpi-meta">Milestone ${m.id}</div>
+          <div class="fw-600" style="font-size:1.02rem;font-weight:600;">${m.name}</div>
+        </div>
+        <span class="status-chip chip-${m.status==='done'?'done':m.status==='current'?'current':'pending'}">${STATUS_LABEL[m.status]}</span>
+      </div>
+      <div class="ms-weight" style="color:${STATUS_COLOR[m.status]};">${m.weight}%</div>
+      <div class="kpi-meta mb-2">${fmt(m.start)} – ${fmt(m.end)}</div>
+      <div class="progressbar-track"><div class="progressbar-fill" style="width:0%;background:${STATUS_COLOR[m.status]};" data-target="${m.progress}"></div></div>
+      <div class="kpi-meta mt-1">${m.progress}% complete</div>
+    </div>`;
+  msWrap.appendChild(col);
+});
+setTimeout(()=>{
+  document.querySelectorAll('.progressbar-fill').forEach(el=>{ el.style.width = el.dataset.target+'%'; });
+},400);
+
+/* Modal population */
+document.querySelectorAll('[data-bs-target="#milestoneModal"]').forEach(card=>{
+  card.addEventListener('click',()=>{
+    const m = MILESTONES.find(x=>x.id==card.dataset.id);
+    document.getElementById('modalTitle').textContent = `Milestone ${m.id}: ${m.name}`;
+    document.getElementById('modalBody').innerHTML = `
+      <div class="mb-3 d-flex gap-4 flex-wrap">
+        <div><div class="kpi-meta">Weight</div><div class="fw-bold">${m.weight}%</div></div>
+        <div><div class="kpi-meta">Status</div><div class="fw-bold">${STATUS_LABEL[m.status]}</div></div>
+        <div><div class="kpi-meta">Dates</div><div class="fw-bold">${fmt(m.start)} – ${fmt(m.end)}</div></div>
+      </div>
+      <h6>Activities</h6>
+      <ul>${m.activities.map(a=>`<li>${a}</li>`).join('')}</ul>`;
+    document.getElementById('modalExportBtn').onclick = ()=>exportElement(document.getElementById('modalBody'), `Milestone_${m.id}_${m.name.replace(/\s+/g,'_')}.pdf`);
+  });
+});
+
+/* ============== ACCORDIONS ============== */
+function buildAccordion(containerId, sections, prefix){
+  const el = document.getElementById(containerId);
+  sections.forEach((s,i)=>{
+    const itemId = `${prefix}${i}`;
+    const div = document.createElement('div');
+    div.className = "accordion-item searchable";
+    div.dataset.search = (s.title+" "+s.date+" "+s.items.join(" ")).toLowerCase();
+    div.innerHTML = `
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${itemId}">
+          <span class="me-2 mono" style="color:var(--text-2);font-size:.78rem;">${s.date}</span> ${s.title}
+        </button>
+      </h2>
+      <div id="${itemId}" class="accordion-collapse collapse">
+        <div class="accordion-body"><ul>${s.items.map(it=>`<li>${it}</li>`).join('')}</ul></div>
+      </div>`;
+    el.appendChild(div);
+  });
+}
+buildAccordion('workshopAccordion', WORKSHOPS, 'wk');
+buildAccordion('uatAccordion', UAT_SECTIONS, 'uat');
+
+/* ============== MASTER GANTT (2025-2026, milestone level) ============== */
+const masterGanttGrid = document.getElementById('masterGanttGrid');
+const mStart = new Date("2025-03-01");
+const mEnd = new Date("2026-08-31");
+const mTotalDays = (mEnd-mStart)/86400000;
+
+let mMonthsHtml = `<div class="gantt-months"><div></div><div class="gantt-month-track" style="grid-template-columns:repeat(18,1fr);">`;
+let mCursor = new Date(mStart);
+while(mCursor<=mEnd){
+  mMonthsHtml += `<div>${mCursor.toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</div>`;
+  mCursor.setMonth(mCursor.getMonth()+1);
+}
+mMonthsHtml += `</div></div>`;
+masterGanttGrid.innerHTML = mMonthsHtml;
+
+MILESTONES.forEach(m=>{
+  const s = new Date(m.start), e = new Date(m.end);
+  const left = ((s-mStart)/86400000/mTotalDays)*100;
+  const width = Math.max(0.6,((e-s)/86400000/mTotalDays)*100);
+  const row = document.createElement('div');
+  row.className = "gantt-row";
+  row.innerHTML = `
+    <div class="gantt-label">${m.id}. ${m.name}</div>
+    <div class="gantt-track">
+      <div class="gantt-bar" style="left:${left}%;width:${width}%;background:${STATUS_COLOR[m.status]};"
+        title="${m.name}\n${fmt(m.start)} – ${fmt(m.end)}\nWeight: ${m.weight}%\nStatus: ${STATUS_LABEL[m.status]}"></div>
+    </div>`;
+  masterGanttGrid.appendChild(row);
+});
+
+/* Delay / idle gap band as its own row */
+(function(){
+  const s = new Date(DELAY_GAP.start), e = new Date(DELAY_GAP.end);
+  const left = ((s-mStart)/86400000/mTotalDays)*100;
+  const width = Math.max(0.6,((e-s)/86400000/mTotalDays)*100);
+  const gapDays = daysBetween(DELAY_GAP.start, DELAY_GAP.end);
+  const row = document.createElement('div');
+  row.className = "gantt-row";
+  row.innerHTML = `
+    <div class="gantt-label" style="color:var(--red);font-weight:600;">⚠ Delay / Idle Gap</div>
+    <div class="gantt-track">
+      <div class="gantt-bar" style="left:${left}%;width:${width}%;background:repeating-linear-gradient(45deg,var(--red),var(--red) 4px,transparent 4px,transparent 8px);border:1px solid var(--red);"
+        title="Idle gap between Cost Finalization and Data Preparation\n${fmt(DELAY_GAP.start)} – ${fmt(DELAY_GAP.end)}\nDuration: ${gapDays} days"></div>
+    </div>`;
+  masterGanttGrid.appendChild(row);
+})();
+
+/* ============== DETAILED EXECUTION GANTT (sub-tasks, 2026) ============== */
+const ganttGrid = document.getElementById('ganttGrid');
+const ganttStart = new Date("2025-03-01");
+const ganttEnd = new Date("2026-08-31");
+const totalDays = (ganttEnd-ganttStart)/86400000;
+
+let monthsHtml = `<div class="gantt-months"><div></div><div class="gantt-month-track">`;
+let cursor = new Date(ganttStart);
+while(cursor<=ganttEnd){
+  monthsHtml += `<div>${cursor.toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</div>`;
+  cursor.setMonth(cursor.getMonth()+1);
+}
+monthsHtml += `</div></div>`;
+ganttGrid.innerHTML = monthsHtml;
+
+GANTT_TASKS.forEach(t=>{
+  const s = new Date(t.start), e = new Date(t.end);
+  const left = ((s-ganttStart)/86400000/totalDays)*100;
+  const width = Math.max(0.6,((e-s)/86400000/totalDays)*100);
+  const row = document.createElement('div');
+  row.className = "gantt-row searchable";
+  row.dataset.search = (t.name+" "+fmt(t.start)+" "+fmt(t.end)).toLowerCase();
+  row.innerHTML = `
+    <div class="gantt-label">${t.name}</div>
+    <div class="gantt-track">
+      <div class="gantt-bar" style="left:${left}%;width:${width}%;background:${STATUS_COLOR[t.status]};"
+        title="${t.name}\n${fmt(t.start)} – ${fmt(t.end)}\nStatus: ${STATUS_LABEL[t.status]}"></div>
+    </div>`;
+  ganttGrid.appendChild(row);
+});
+
+/* ============== CHARTS ============== */
+Chart.defaults.color = '#aab6c8';
+Chart.defaults.font.family = "Poppins";
+
+new Chart(document.getElementById('weightPie'),{
+  type:'pie',
+  data:{
+    labels: MILESTONES.map(m=>m.name),
+    datasets:[{data:MILESTONES.map(m=>m.weight),
+      backgroundColor:['#27d39a','#3aa6ff','#9a7bff','#ff9f43','#3aa6ff','#5b6678','#5b6678'],
+      borderColor:'rgba(7,17,31,0.6)', borderWidth:2}]
+  },
+  options:{plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}}}
+});
+
+new Chart(document.getElementById('completionDoughnut'),{
+  type:'doughnut',
+  data:{labels:['Completed','Remaining'],datasets:[{data:[65,35],backgroundColor:['#27d39a','rgba(255,255,255,0.08)'],borderWidth:0}]},
+  options:{cutout:'72%',plugins:{legend:{position:'bottom'}}}
+});
+
+new Chart(document.getElementById('progressBarChart'),{
+  type:'bar',
+  data:{
+    labels:['Pre-Implementation','Cost Finalization','Data Preparation','Workshops','UAT','Go Live','Closure'],
+    datasets:[{
+      data:[100,100,100,100,35,0,0],
+      backgroundColor:[100,100,100,100,35,0,0].map(v=>v===100?'#27d39a':v>0?'#3aa6ff':'#5b6678'),
+      borderRadius:6, barThickness:18
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    scales:{x:{max:100,grid:{color:'rgba(255,255,255,0.06)'}},y:{grid:{display:false}}},
+    plugins:{legend:{display:false}}
+  }
+});
+
+/* ============== SEARCH ============== */
+const searchInput = document.getElementById('globalSearch');
+const allSearchable = ()=>document.querySelectorAll('.searchable, .tl-item');
+function clearHighlights(){
+  document.querySelectorAll('mark').forEach(m=>{
+    m.outerHTML = m.innerHTML;
+  });
+}
+searchInput.addEventListener('input', ()=>{
+  const q = searchInput.value.trim().toLowerCase();
+  const resultsBox = document.getElementById('searchResults');
+  clearHighlights();
+  if(!q){ allSearchable().forEach(el=>el.style.display=''); resultsBox.innerHTML=''; return; }
+  let count=0;
+  allSearchable().forEach(el=>{
+    const text = (el.dataset.search || el.textContent).toLowerCase();
+    if(text.includes(q)){ el.style.display=''; count++; }
+    else{ el.style.display='none'; }
+  });
+  resultsBox.innerHTML = `<span class="kpi-meta">${count} match(es) found for "<strong>${searchInput.value}</strong>"</span>`;
+});
+
+/* ============== THEME TOGGLE ============== */
+const themeBtn = document.getElementById('themeToggle');
+themeBtn.addEventListener('click', ()=>{
+  const body = document.body;
+  const isLight = body.getAttribute('data-theme')==='light';
+  body.setAttribute('data-theme', isLight?'dark':'light');
+  themeBtn.innerHTML = isLight ? '<i class="fa-solid fa-moon"></i> Dark Mode' : '<i class="fa-solid fa-sun"></i> Light Mode';
+});
+
+/* ============== FULLSCREEN ============== */
+document.getElementById('fullScreenBtn').addEventListener('click', ()=>{
+  if(!document.fullscreenElement){ document.documentElement.requestFullscreen().catch(()=>{}); }
+  else{ document.exitFullscreen(); }
+});
+
+/* ============== PRESENTATION MODE ============== */
+document.getElementById('presentModeBtn').addEventListener('click', function(){
+  document.body.classList.toggle('presentation-mode');
+  const nav = document.querySelector('.navbar-glass');
+  if(document.body.classList.contains('presentation-mode')){
+    nav.style.display='none'; this.innerHTML='<i class="fa-solid fa-xmark me-2"></i>Exit Presentation';
+    document.documentElement.requestFullscreen().catch(()=>{});
+  } else {
+    nav.style.display=''; this.innerHTML='<i class="fa-solid fa-display me-2"></i>Presentation Mode';
+  }
+});
+
+/* ============== BACK TO TOP ============== */
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', ()=>{ backTop.classList.toggle('show', window.scrollY>400); });
+backTop.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+/* ============== EXPORT PDF ============== */
+function exportElement(el, filename){
+  const opt = { margin:0.3, filename:filename, image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2,backgroundColor:'#0c1622'}, jsPDF:{unit:'in',format:'a4',orientation:'landscape'} };
+  html2pdf().set(opt).from(el).save();
+}
+document.getElementById('exportPdfBtn').addEventListener('click', ()=>{
+  exportElement(document.getElementById('dashboardRoot'), 'BHRL_HRIS_Dashboard.pdf');
+});
+
+/* tooltips */
+document.querySelectorAll('[title]').forEach(el=> new bootstrap.Tooltip(el));
+</script>
+</body>
+</html>
