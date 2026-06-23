@@ -196,7 +196,12 @@ mark{background:var(--orange);color:#1a1300;padding:0 2px;border-radius:3px;}
 
 /* ===== Gantt ===== */
 .gantt-wrap{overflow-x:auto;}
-.gantt-grid{min-width:1100px;}
+.gantt-grid{min-width:1100px;position:relative;}
+.gantt-today-line{position:absolute;top:26px;bottom:4px;width:2px;background:var(--orange);z-index:6;pointer-events:none;}
+.gantt-today-label{
+  position:absolute;top:-22px;left:50%;transform:translateX(-50%);background:var(--orange);color:#1a1300;
+  font-size:.64rem;font-weight:700;padding:2px 7px;border-radius:5px;white-space:nowrap;letter-spacing:.03em;
+}
 .gantt-row{display:grid;grid-template-columns:230px 1fr;align-items:center;border-bottom:1px solid var(--card-border);padding:.5rem 0;}
 .gantt-label{font-size:.82rem;color:var(--text-1);padding-right:1rem;}
 .gantt-track{position:relative;height:26px;background:rgba(255,255,255,.04);border-radius:6px;}
@@ -392,7 +397,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
           </div>
           <div class="kpi-label">Current Phase</div>
           <div class="kpi-value" style="color:var(--blue);font-size:1.2rem;">User Acceptance Testing</div>
-          <div class="kpi-meta">01 Jul 2026 – 01 Aug 2026</div>
+          <div class="kpi-meta">08 Jul 2026 – 10 Jul 2026</div>
         </div>
       </div>
 
@@ -507,7 +512,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
           <span class="status-chip chip-current">Current Phase</span>
           <h5 class="d-inline ms-2 mb-0">5. User Acceptance Testing (UAT)</h5>
         </div>
-        <div class="kpi-meta">Weight 15% · 01/07/2026 – 01/08/2026 <span style="color:var(--red);">(was 23/06/2026 – 24/07/2026)</span></div>
+        <div class="kpi-meta">Weight 15% · 08/07/2026 – 10/07/2026 <span style="color:var(--red);">(was 23/06/2026 – 24/07/2026)</span></div>
       </div>
       <div class="accordion searchable" id="uatAccordion"></div>
     </div>
@@ -548,7 +553,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
   <section class="section-pad pt-0">
     <div class="eyebrow">Detailed Schedule</div>
     <div class="section-title">Execution Phase — Apr 2026 to Aug 2026</div>
-    <div class="section-desc mb-2">Task-level breakdown from the implementation schedule (PeoplesHR project plan).</div>
+    <div class="section-desc mb-2">Task-level breakdown from the implementation schedule (PeoplesHR project plan). Orange line marks <strong id="execTodayLabel">today</strong>.</div>
     <div class="glass-card p-3 mt-2">
       <div class="gantt-wrap">
         <div class="gantt-grid" id="ganttGrid"></div>
@@ -648,7 +653,7 @@ const MILESTONES = [
    activities:["Project kick-off","Project team formation","System installation","Environment setup","Company parameter setup","Master data collection and cleansing","Employee data upload","Organizational structure finalization","Grading structure finalization","Department and designation mapping"]},
   {id:4,name:"Workshops & Configuration",weight:25,start:"2026-05-23",end:"2026-06-19",status:"done",progress:100,
    activities:["Employee Information Management workshop","Employee Life Cycle workshop","Leave Management workshop","Attendance Management workshop","Probation & Contract Evaluation workshop","Workflow and approval hierarchy discussions","User role and security setup","Letter template setup","Organization structure configuration","Grade and designation configuration","Shift and roster configuration","Dashboard and report configuration","Mobile App configuration","Business process validation sessions","Configuration sign-off"]},
-  {id:5,name:"User Acceptance Testing (UAT)",weight:15,start:"2026-07-01",end:"2026-08-01",status:"current",progress:35,
+  {id:5,name:"User Acceptance Testing (UAT)",weight:15,start:"2026-07-08",end:"2026-07-10",status:"current",progress:35,
    originalStart:"2026-06-23",originalEnd:"2026-07-24",
    activities:["UAT plan preparation","Test scenario preparation","Employee Information Management testing","Employee Life Cycle testing","Leave Management testing","Attendance Management testing","Probation Evaluation testing","Workflow testing","Approval hierarchy validation","ESS and MSS testing","Mobile App testing","Letter generation validation","Report validation","Issue logging","Defect fixing","Retesting","User sign-off","Final UAT sign-off"]},
   {id:6,name:"Go Live",weight:10,start:"2026-08-03",end:"2026-08-03",status:"pending",progress:0,
@@ -677,12 +682,10 @@ const WORKSHOPS = [
 ];
 
 const UAT_SECTIONS = [
-  {date:"23 – 25 Jun 2026", title:"EIM Live Run / UAT", items:["Employee Information Manager","Organization Chart","Employee Life Cycle","Personal data verification","Job related data verification (Banks, Branches, Cost Centers, Salary Grades, Corporate Titles)","OT approvals","Leave approvals","Reporting hierarchy validation","Assign supervisors and subordinates","Company hierarchy validation"]},
-  {date:"30 Jun – 09 Jul 2026", title:"Leave & Attendance UAT", items:["Time & Attendance","Roster groups","Roster schedules","Shift setup","Absence Management","Annual Leave","Casual Leave","Medical Leave","Maternity Leave","Authorized No-Pay Leave","No-Pay Leave","Short Leave entitlements","Reports verification"]},
-  {date:"10 – 13 Jul 2026", title:"Performance Management UAT", items:["Performance Management Module UAT","Probation Evaluation Module UAT"]},
-  {date:"14 – 24 Jul 2026", title:"Payroll Parallel Run", items:["June payroll test run","Reports verification","Finalization"]},
-  {date:"14 – 16 Jul 2026", title:"Other Modules UAT", items:["Mobile Application","Employee Self Service","On-Demand Reporting","Report Navigator"]},
-  {date:"27 Jul 2026", title:"UAT Sign-Off", items:["Final UAT sign-off by all module owners and project management"]}
+  {date:"08 Jul 2026", title:"EIM, ELC, Org Chart, SSHR, Mobile App, Report Navigator, On Demand Reports", items:["Employee Information Manager (EIM)","Employee Life Cycle (ELC)","Organization Chart","Employee Self Service (SSHR)","Mobile Application","Report Navigator","On Demand Reports","Required: All admin users responsible for respective areas"]},
+  {date:"09 Jul 2026", title:"Leave and Attendance", items:["Leave Management testing","Attendance Management testing","Roster groups, schedules, shifts","Required: All admin users responsible for respective areas"]},
+  {date:"10 Jul 2026", title:"Payroll", items:["Payroll Module UAT","Required: Payroll admin users"]},
+  {date:"10 Jul 2026", title:"Performance and Probation Evaluation", items:["Performance Management Module UAT","Probation Evaluation Module UAT","Required: All admin users responsible for respective areas"]}
 ];
 
 const GANTT_TASKS = [
@@ -690,12 +693,11 @@ const GANTT_TASKS = [
   {name:"System Installation & Config", start:"2026-05-05", end:"2026-05-19", status:"done"},
   {name:"Master Data Upload", start:"2026-05-07", end:"2026-05-21", status:"done"},
   {name:"Module Workshops", start:"2026-05-25", end:"2026-06-19", status:"done"},
-  {name:"EIM Live Run / UAT", start:"2026-06-23", end:"2026-06-25", status:"current"},
-  {name:"Leave & Attendance UAT", start:"2026-06-30", end:"2026-07-09", status:"current"},
-  {name:"Performance & Probation UAT", start:"2026-07-10", end:"2026-07-13", status:"current"},
-  {name:"Payroll Parallel Run / UAT", start:"2026-07-14", end:"2026-07-24", status:"current"},
-  {name:"Other Modules UAT", start:"2026-07-14", end:"2026-07-16", status:"current"},
-  {name:"UAT Sign-off", start:"2026-07-27", end:"2026-07-27", status:"pending"},
+  {name:"EIM, ELC, SSHR, Mobile & Reports UAT", start:"2026-07-08", end:"2026-07-08", status:"current"},
+  {name:"Leave & Attendance UAT", start:"2026-07-09", end:"2026-07-09", status:"current"},
+  {name:"Payroll UAT", start:"2026-07-10", end:"2026-07-10", status:"current"},
+  {name:"Performance & Probation UAT", start:"2026-07-10", end:"2026-07-10", status:"current"},
+  {name:"UAT Sign-off", start:"2026-07-13", end:"2026-07-13", status:"pending"},
   {name:"Final Acceptance", start:"2026-07-28", end:"2026-07-31", status:"pending"},
   {name:"Go Live", start:"2026-08-03", end:"2026-08-03", status:"pending"},
   {name:"Support Transfer & Closure", start:"2026-08-17", end:"2026-08-21", status:"pending"}
@@ -852,7 +854,7 @@ function buildAccordion(containerId, sections, prefix){
         </button>
       </h2>
       <div id="${itemId}" class="accordion-collapse collapse">
-        <div class="accordion-body"><ul>${s.items.map(it=>`<li>${it}</li>`).join('')}</ul></div>
+        <div class="accordion-body"><ul>${s.items.map(it=> it.startsWith('Required:') ? `<li style="list-style:none;margin-left:-1.2rem;margin-top:.5rem;"><span class="status-chip" style="background:var(--blue-soft);color:var(--blue);">${it.replace('Required: ','')}</span></li>` : `<li>${it}</li>`).join('')}</ul></div>
       </div>`;
     el.appendChild(div);
   });
@@ -907,20 +909,38 @@ MILESTONES.forEach(m=>{
   masterGanttGrid.appendChild(row);
 })();
 
+/* ============== TODAY MARKER (shared helper) ============== */
+function renderTodayLine(gridEl, rangeStart, rangeEnd){
+  const today = new Date(); today.setHours(0,0,0,0);
+  if(today < rangeStart || today > rangeEnd) return; // today is outside this chart's range
+  const totalDays = (rangeEnd-rangeStart)/86400000;
+  const pct = ((today-rangeStart)/86400000/totalDays)*100;
+  const line = document.createElement('div');
+  line.className = 'gantt-today-line';
+  line.style.left = `calc(230px + (100% - 230px) * ${pct/100})`;
+  line.innerHTML = `<div class="gantt-today-label">Today · ${today.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</div>`;
+  gridEl.style.position = 'relative';
+  gridEl.appendChild(line);
+}
+renderTodayLine(masterGanttGrid, mStart, mEnd);
+
 /* ============== DETAILED EXECUTION GANTT (sub-tasks, 2026) ============== */
 const ganttGrid = document.getElementById('ganttGrid');
-const ganttStart = new Date("2025-03-01");
+const ganttStart = new Date("2026-04-01");
 const ganttEnd = new Date("2026-08-31");
 const totalDays = (ganttEnd-ganttStart)/86400000;
 
-let monthsHtml = `<div class="gantt-months"><div></div><div class="gantt-month-track">`;
+let monthsHtml = `<div class="gantt-months"><div></div><div class="gantt-month-track" id="execMonthTrack">`;
+let monthCount = 0;
 let cursor = new Date(ganttStart);
 while(cursor<=ganttEnd){
   monthsHtml += `<div>${cursor.toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</div>`;
   cursor.setMonth(cursor.getMonth()+1);
+  monthCount++;
 }
 monthsHtml += `</div></div>`;
 ganttGrid.innerHTML = monthsHtml;
+document.getElementById('execMonthTrack').style.gridTemplateColumns = `repeat(${monthCount},1fr)`;
 
 GANTT_TASKS.forEach(t=>{
   const s = new Date(t.start), e = new Date(t.end);
@@ -937,6 +957,9 @@ GANTT_TASKS.forEach(t=>{
     </div>`;
   ganttGrid.appendChild(row);
 });
+renderTodayLine(ganttGrid, ganttStart, ganttEnd);
+const execTodayLabelEl = document.getElementById('execTodayLabel');
+if(execTodayLabelEl) execTodayLabelEl.textContent = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
 
 /* ============== CHARTS ============== */
 Chart.defaults.color = '#aab6c8';
