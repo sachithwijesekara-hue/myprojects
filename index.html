@@ -392,7 +392,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
           </div>
           <div class="kpi-label">Current Phase</div>
           <div class="kpi-value" style="color:var(--blue);font-size:1.2rem;">User Acceptance Testing</div>
-          <div class="kpi-meta">23 Jun 2026 – 24 Jul 2026</div>
+          <div class="kpi-meta">01 Jul 2026 – 01 Aug 2026</div>
         </div>
       </div>
 
@@ -444,7 +444,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
     <div class="glass-card p-3 mt-2 mb-3" style="border-left:3px solid var(--red);">
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <i class="fa-solid fa-circle-exclamation" style="color:var(--red);"></i>
-        <span class="kpi-meta">Milestones 3 onward are running <strong style="color:var(--red);">63 days behind</strong> the original projected schedule, due to the idle gap after Cost Finalization. Struck-through dates show the original plan; red dates show actual.</span>
+        <span class="kpi-meta">All milestones up to Workshops &amp; Configuration completed on schedule. <strong style="color:var(--red);">UAT is the only phase running behind plan.</strong> Struck-through dates show the original UAT plan; red dates show actual.</span>
       </div>
     </div>
     <div class="row mt-3">
@@ -507,7 +507,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
           <span class="status-chip chip-current">Current Phase</span>
           <h5 class="d-inline ms-2 mb-0">5. User Acceptance Testing (UAT)</h5>
         </div>
-        <div class="kpi-meta">Weight 15% · 23/06/2026 – 24/07/2026</div>
+        <div class="kpi-meta">Weight 15% · 01/07/2026 – 01/08/2026 <span style="color:var(--red);">(was 23/06/2026 – 24/07/2026)</span></div>
       </div>
       <div class="accordion searchable" id="uatAccordion"></div>
     </div>
@@ -648,7 +648,8 @@ const MILESTONES = [
    activities:["Project kick-off","Project team formation","System installation","Environment setup","Company parameter setup","Master data collection and cleansing","Employee data upload","Organizational structure finalization","Grading structure finalization","Department and designation mapping"]},
   {id:4,name:"Workshops & Configuration",weight:25,start:"2026-05-23",end:"2026-06-19",status:"done",progress:100,
    activities:["Employee Information Management workshop","Employee Life Cycle workshop","Leave Management workshop","Attendance Management workshop","Probation & Contract Evaluation workshop","Workflow and approval hierarchy discussions","User role and security setup","Letter template setup","Organization structure configuration","Grade and designation configuration","Shift and roster configuration","Dashboard and report configuration","Mobile App configuration","Business process validation sessions","Configuration sign-off"]},
-  {id:5,name:"User Acceptance Testing (UAT)",weight:15,start:"2026-06-23",end:"2026-07-24",status:"current",progress:35,
+  {id:5,name:"User Acceptance Testing (UAT)",weight:15,start:"2026-07-01",end:"2026-08-01",status:"current",progress:35,
+   originalStart:"2026-06-23",originalEnd:"2026-07-24",
    activities:["UAT plan preparation","Test scenario preparation","Employee Information Management testing","Employee Life Cycle testing","Leave Management testing","Attendance Management testing","Probation Evaluation testing","Workflow testing","Approval hierarchy validation","ESS and MSS testing","Mobile App testing","Letter generation validation","Report validation","Issue logging","Defect fixing","Retesting","User sign-off","Final UAT sign-off"]},
   {id:6,name:"Go Live",weight:10,start:"2026-08-03",end:"2026-08-03",status:"pending",progress:0,
    activities:["Production environment preparation","Data migration validation","Final parameter verification","User account activation","Production deployment","Go-live support"]},
@@ -765,17 +766,18 @@ MILESTONES.forEach(m=>{
   const div = document.createElement('div');
   div.className = `tl-item glass-card ${m.status}`;
   div.dataset.search = (m.name+" "+m.activities.join(" ")+" "+fmt(m.start)+" "+fmt(m.end)).toLowerCase();
-  const isDelayed = m.id >= 3; // milestones pushed out by the 63-day idle gap
+  const isDelayed = m.id === 5; // only UAT has slipped — other milestones ran on schedule
   let dateBlock;
   if(isDelayed){
-    const origStart = shiftDate(m.start, -DELAY_DAYS);
-    const origEnd = shiftDate(m.end, -DELAY_DAYS);
+    const origStart = m.originalStart || shiftDate(m.start, -DELAY_DAYS);
+    const origEnd = m.originalEnd || shiftDate(m.end, -DELAY_DAYS);
+    const slipDays = daysBetween(origStart, m.start);
     dateBlock = `
       <div class="tl-meta">
         <span style="text-decoration:line-through;">Projected: ${fmt(origStart)} – ${fmt(origEnd)}</span>
         &nbsp;→&nbsp;
         <span style="color:var(--red);font-weight:600;">Actual: ${fmt(m.start)} – ${fmt(m.end)}</span>
-        <span class="mono" style="color:var(--red);">(+${DELAY_DAYS}d)</span>
+        <span class="mono" style="color:var(--red);">(+${slipDays}d)</span>
         &nbsp;· Weight ${m.weight}%
       </div>`;
   } else {
