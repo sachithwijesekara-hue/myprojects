@@ -243,6 +243,77 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
 .fade-up{animation:fadeUp .6s ease both;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 
+/* ===== Delayed glow ===== */
+@keyframes redGlowPulse{
+  0%{box-shadow:0 0 0 0 rgba(255,92,122,.5), var(--shadow);}
+  70%{box-shadow:0 0 0 16px rgba(255,92,122,0), var(--shadow);}
+  100%{box-shadow:0 0 0 0 rgba(255,92,122,0), var(--shadow);}
+}
+.delayed-glow{animation:redGlowPulse 2.2s infinite;border-color:rgba(255,92,122,.45)!important;}
+
+/* ===== Project switcher ===== */
+.project-switcher{
+  display:flex;gap:.6rem;overflow-x:auto;padding:.85rem 1.25rem;
+  background:rgba(7,17,31,.5);border-bottom:1px solid var(--card-border);
+  -ms-overflow-style:none;scrollbar-width:none;
+}
+[data-theme="light"] .project-switcher{background:rgba(255,255,255,.5);}
+.project-switcher::-webkit-scrollbar{display:none;}
+.project-pill{
+  flex-shrink:0;display:flex;align-items:center;gap:.5rem;padding:.5rem 1.1rem;border-radius:30px;
+  font-size:.82rem;font-weight:600;cursor:pointer;border:1px solid var(--card-border);
+  background:var(--card);color:var(--text-1);white-space:nowrap;transition:all .2s ease;
+}
+.project-pill:hover{background:var(--card-hover);transform:translateY(-1px);}
+.project-pill.active{background:var(--green-soft);color:var(--green);border-color:rgba(39,211,154,.4);}
+.project-pill.add-new{border-style:dashed;color:var(--text-2);}
+
+/* ===== Presentation float toggle ===== */
+#presentToggleFloat{
+  position:fixed;top:16px;right:16px;width:42px;height:42px;border-radius:50%;
+  background:var(--card);border:1px solid var(--card-border);color:var(--text-1);
+  display:none;align-items:center;justify-content:center;z-index:1100;backdrop-filter:blur(12px);
+  cursor:pointer;box-shadow:var(--shadow);
+}
+#presentToggleFloat:hover{background:var(--card-hover);}
+
+/* ===== Mobile responsiveness ===== */
+@media (max-width:768px){
+  .navbar-glass{padding:.6rem .9rem;}
+  .brand-sub{display:none;}
+  .brand-title{font-size:.9rem;}
+  .nav-btn{padding:.4rem .55rem;font-size:0;}
+  .nav-btn i{font-size:.95rem;}
+  .live-clock{display:none;}
+  .project-switcher{padding:.65rem .9rem;}
+  .project-pill{font-size:.74rem;padding:.4rem .8rem;}
+  .section-pad{padding:1.4rem 0;}
+  .section-title{font-size:1.15rem;}
+  .section-desc{font-size:.8rem;}
+  .kpi-value{font-size:1.4rem;}
+  .kpi-card{padding:1.1rem 1.1rem;}
+  .ring-wrap{width:62px;height:62px;}
+  .ring-wrap svg{width:62px;height:62px;}
+  .vtimeline{padding-left:2.1rem;}
+  .vtimeline::before{left:10px;}
+  .tl-dot{left:-2.1rem;width:22px;height:22px;font-size:.62rem;}
+  .tl-item{padding:.8rem .9rem;}
+  .tl-title{font-size:.86rem;}
+  .stat-mini{padding:.7rem .4rem;}
+  .countdown-num{font-size:1.25rem;}
+  .ms-weight{font-size:1.3rem;}
+  .ms-card{padding:1.05rem 1.1rem;}
+  #backTop{width:40px;height:40px;bottom:16px;right:16px;}
+  .accordion-button{font-size:.82rem;padding:.7rem .9rem;}
+  table{font-size:.78rem;}
+  th,td{padding:.45rem .3rem!important;}
+}
+@media (max-width:480px){
+  .kpi-value{font-size:1.25rem;}
+  .section-title{font-size:1.02rem;}
+  .row.g-3 > .col-12.col-md-6.col-xl-3{flex:0 0 100%;max-width:100%;}
+}
+
 @media print{
   .no-print{display:none!important;}
   body{background:#fff;color:#000;}
@@ -277,6 +348,12 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
   </div>
 </nav>
 
+<!-- PROJECT SWITCHER -->
+<div class="project-switcher no-print">
+  <div class="project-pill active"><i class="fa-solid fa-building"></i> BHRL HRIS · Serendib Leisure</div>
+  <div class="project-pill add-new" id="addProjectPill"><i class="fa-solid fa-plus"></i> Add Project</div>
+</div>
+
 <div id="dashboardRoot" class="container-fluid px-3 px-lg-4">
 
   <!-- EXECUTIVE DASHBOARD -->
@@ -307,9 +384,12 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
       </div>
 
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="glass-card kpi-card fade-up" style="animation-delay:.05s;">
-          <div class="glow" style="background:var(--blue);"></div>
-          <div class="kpi-icon mb-2" style="background:var(--blue-soft);color:var(--blue);"><i class="fa-solid fa-vial"></i></div>
+        <div class="glass-card kpi-card fade-up delayed-glow" style="animation-delay:.05s;">
+          <div class="glow" style="background:var(--red);"></div>
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="kpi-icon mb-2" style="background:var(--blue-soft);color:var(--blue);"><i class="fa-solid fa-vial"></i></div>
+            <span class="status-chip" style="background:var(--red-soft);color:var(--red);">Delayed</span>
+          </div>
           <div class="kpi-label">Current Phase</div>
           <div class="kpi-value" style="color:var(--blue);font-size:1.2rem;">User Acceptance Testing</div>
           <div class="kpi-meta">23 Jun 2026 – 24 Jul 2026</div>
@@ -360,7 +440,13 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
   <!-- TIMELINE -->
   <section class="section-pad">
     <div class="eyebrow">Roadmap</div>
-    <div class="section-title">Project Timeline</div>
+    <div class="section-title">Project Timeline — Projected vs Actual</div>
+    <div class="glass-card p-3 mt-2 mb-3" style="border-left:3px solid var(--red);">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <i class="fa-solid fa-circle-exclamation" style="color:var(--red);"></i>
+        <span class="kpi-meta">Milestones 3 onward are running <strong style="color:var(--red);">63 days behind</strong> the original projected schedule, due to the idle gap after Cost Finalization. Struck-through dates show the original plan; red dates show actual.</span>
+      </div>
+    </div>
     <div class="row mt-3">
       <div class="col-lg-7">
         <div class="vtimeline searchable" id="timelineWrap"></div>
@@ -533,6 +619,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
 </footer>
 
 <button id="backTop" class="no-print"><i class="fa-solid fa-arrow-up"></i></button>
+<button id="presentToggleFloat" class="no-print" title="Show controls"><i class="fa-solid fa-sliders"></i></button>
 
 <!-- MODAL -->
 <div class="modal fade" id="milestoneModal" tabindex="-1">
@@ -568,6 +655,16 @@ const MILESTONES = [
   {id:7,name:"Live Training & Feedback",weight:10,start:"2026-08-04",end:"2026-08-21",status:"pending",progress:0,
    activities:["End-user training","User manuals","Hypercare support","Incident handling","Feedback collection","Process improvements","Final system acceptance","Project closure"]}
 ];
+
+/* Identified idle/delay gap between commercial closure and execution re-kick-off */
+const DELAY_GAP = {start:"2026-02-26", end:"2026-04-30"};
+function daysBetween(a,b){ return Math.round((new Date(b)-new Date(a))/86400000); }
+const DELAY_DAYS = daysBetween(DELAY_GAP.start, DELAY_GAP.end);
+function shiftDate(dateStr, days){
+  const d = new Date(dateStr+"T00:00:00");
+  d.setDate(d.getDate()+days);
+  return d.toISOString().slice(0,10);
+}
 
 const WORKSHOPS = [
   {date:"25 May 2026", title:"Workshop 1", items:["Employee Information Manager","Organization Chart","Employee Self Service","Employee Life Cycle","Mobile Application"]},
@@ -605,10 +702,6 @@ const GANTT_TASKS = [
 
 const STATUS_COLOR = {done:"var(--green)", current:"var(--blue)", pending:"var(--gray)"};
 const STATUS_LABEL = {done:"Completed", current:"Current", pending:"Pending"};
-
-/* Identified idle/delay gap between commercial closure and execution re-kick-off */
-const DELAY_GAP = {start:"2026-02-26", end:"2026-04-30"};
-function daysBetween(a,b){ return Math.round((new Date(b)-new Date(a))/86400000); }
 
 /* ============== UTIL ============== */
 function fmt(d){
@@ -672,12 +765,28 @@ MILESTONES.forEach(m=>{
   const div = document.createElement('div');
   div.className = `tl-item glass-card ${m.status}`;
   div.dataset.search = (m.name+" "+m.activities.join(" ")+" "+fmt(m.start)+" "+fmt(m.end)).toLowerCase();
+  const isDelayed = m.id >= 3; // milestones pushed out by the 63-day idle gap
+  let dateBlock;
+  if(isDelayed){
+    const origStart = shiftDate(m.start, -DELAY_DAYS);
+    const origEnd = shiftDate(m.end, -DELAY_DAYS);
+    dateBlock = `
+      <div class="tl-meta">
+        <span style="text-decoration:line-through;">Projected: ${fmt(origStart)} – ${fmt(origEnd)}</span>
+        &nbsp;→&nbsp;
+        <span style="color:var(--red);font-weight:600;">Actual: ${fmt(m.start)} – ${fmt(m.end)}</span>
+        <span class="mono" style="color:var(--red);">(+${DELAY_DAYS}d)</span>
+        &nbsp;· Weight ${m.weight}%
+      </div>`;
+  } else {
+    dateBlock = `<div class="tl-meta">${fmt(m.start)} – ${fmt(m.end)} · Weight ${m.weight}%</div>`;
+  }
   div.innerHTML = `
     <div class="tl-dot"><i class="fa-solid ${m.status==='done'?'fa-check':m.status==='current'?'fa-spinner':'fa-clock'}"></i></div>
     <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
       <div>
-        <div class="tl-title">${m.id}. ${m.name}</div>
-        <div class="tl-meta">${fmt(m.start)} – ${fmt(m.end)} · Weight ${m.weight}%</div>
+        <div class="tl-title">${m.id}. ${m.name}${isDelayed?' <span class="status-chip" style="background:var(--red-soft);color:var(--red);">Delayed</span>':''}</div>
+        ${dateBlock}
       </div>
       <span class="status-chip chip-${m.status==='done'?'done':m.status==='current'?'current':'pending'}">${STATUS_LABEL[m.status]}</span>
     </div>`;
@@ -903,15 +1012,26 @@ document.getElementById('fullScreenBtn').addEventListener('click', ()=>{
 });
 
 /* ============== PRESENTATION MODE ============== */
+function setPresentationMode(on){
+  document.body.classList.toggle('presentation-mode', on);
+  document.querySelector('.navbar-glass').style.display = on ? 'none' : '';
+  const btn = document.getElementById('presentModeBtn');
+  if(btn) btn.innerHTML = on ? '<i class="fa-solid fa-xmark me-2"></i>Exit Presentation' : '<i class="fa-solid fa-display me-2"></i>Presentation Mode';
+  document.getElementById('presentToggleFloat').style.display = on ? 'flex' : 'none';
+}
 document.getElementById('presentModeBtn').addEventListener('click', function(){
-  document.body.classList.toggle('presentation-mode');
-  const nav = document.querySelector('.navbar-glass');
-  if(document.body.classList.contains('presentation-mode')){
-    nav.style.display='none'; this.innerHTML='<i class="fa-solid fa-xmark me-2"></i>Exit Presentation';
-    document.documentElement.requestFullscreen().catch(()=>{});
-  } else {
-    nav.style.display=''; this.innerHTML='<i class="fa-solid fa-display me-2"></i>Presentation Mode';
-  }
+  const turningOn = !document.body.classList.contains('presentation-mode');
+  setPresentationMode(turningOn);
+  if(turningOn){ document.documentElement.requestFullscreen().catch(()=>{}); }
+  else if(document.fullscreenElement){ document.exitFullscreen().catch(()=>{}); }
+});
+document.getElementById('presentToggleFloat').addEventListener('click', ()=> setPresentationMode(false));
+/* Default to presentation mode on load (chrome hidden; fullscreen needs a user click so we leave that to the toggle) */
+setPresentationMode(true);
+
+/* ============== PROJECT SWITCHER (placeholder for future projects) ============== */
+document.getElementById('addProjectPill').addEventListener('click', ()=>{
+  alert('This is where additional project dashboards will appear once added — each will show up here as its own tab for quick switching.');
 });
 
 /* ============== BACK TO TOP ============== */
