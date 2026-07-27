@@ -243,7 +243,39 @@ mark{background:var(--orange);color:#1a1300;padding:0 2px;border-radius:3px;}
 .countdown-num{font-size:1.7rem;font-weight:800;color:var(--orange);}
 .countdown-label{font-size:.68rem;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em;}
 
+/* ===== PROJECT LANDING PAGE ===== */
+#projectLanding{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:2rem 1rem;
+}
+.landing-title{font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:.4rem;}
+.landing-sub{font-size:.9rem;color:var(--text-2);text-align:center;margin-bottom:2.5rem;}
+.project-cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;width:100%;max-width:960px;}
+.project-select-card{
+  padding:1.8rem 1.6rem;border-radius:var(--radius-lg);cursor:pointer;
+  background:var(--card);border:1px solid var(--card-border);
+  transition:transform .22s ease,background .22s ease,border-color .22s ease;
+  position:relative;overflow:hidden;
+}
+.project-select-card:hover{transform:translateY(-5px);background:var(--card-hover);}
+.project-select-card.bhrl{border-top:3px solid var(--green);}
+.project-select-card.browns{border-top:3px solid var(--orange);}
+.project-select-card.recruit{border-top:3px solid var(--purple);}
+.ps-icon{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1rem;}
+.ps-company{font-size:.72rem;color:var(--text-2);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:.25rem;}
+.ps-title{font-size:1.05rem;font-weight:700;margin-bottom:.4rem;}
+.ps-meta{font-size:.78rem;color:var(--text-2);}
+.ps-status{position:absolute;top:1rem;right:1rem;}
+
+/* Recruit milestone table */
+.recruit-tl-actual{color:var(--red);font-weight:600;}
+.recruit-tl-delayed{background:var(--red-soft);color:var(--red);}
+.recruit-tl-progress{background:var(--blue-soft);color:var(--blue);}
+.recruit-tl-done{background:var(--green-soft);color:var(--green);}
+.recruit-tl-planned{background:var(--gray-soft);color:var(--text-1);}
+
 footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-border);}
+
 
 .fade-up{animation:fadeUp .6s ease both;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
@@ -330,7 +362,40 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
 <!-- LOADER -->
 <div id="loader">
   <div class="loader-ring"></div>
-  <div class="loader-text">Loading BHRL HRIS Dashboard…</div>
+  <div class="loader-text">Loading PMO Dashboard…</div>
+</div>
+
+<!-- PROJECT LANDING PAGE -->
+<div id="projectLanding" style="display:none;">
+  <div class="brand-mark" style="margin:0 auto 1rem;width:52px;height:52px;font-size:1.3rem;">P</div>
+  <div class="landing-title">PMO Project Dashboard</div>
+  <div class="landing-sub">Select a project to view its dashboard</div>
+  <div class="project-cards-grid" style="max-width:680px;">
+
+    <div class="project-select-card bhrl" data-goto="bhrl">
+      <div class="ps-status"><span class="status-chip chip-current">In Progress</span></div>
+      <div class="ps-icon" style="background:var(--green-soft);color:var(--green);"><i class="fa-solid fa-building"></i></div>
+      <div class="ps-company">Serendib Leisure Management Ltd</div>
+      <div class="ps-title">BHRL HRIS Implementation</div>
+      <div class="ps-meta">PeoplesHR · 65% Complete · Go-Live 03 Aug 2026</div>
+      <div class="ps-meta mt-2" style="border-top:1px solid var(--card-border);padding-top:.6rem;color:var(--text-2);">
+        <i class="fa-solid fa-hotel me-1"></i> Includes: Browns Hotels &amp; Resorts HRIS (Board Approved 04 Nov 2025 · Pending Kickoff)
+      </div>
+    </div>
+
+    <div class="project-select-card recruit" data-goto="recruit">
+      <div class="ps-status"><span class="status-chip chip-current">UAT</span></div>
+      <div class="ps-icon" style="background:rgba(154,123,255,.15);color:var(--purple);"><i class="fa-solid fa-user-plus"></i></div>
+      <div class="ps-company">LOLC Group / HRIS Team</div>
+      <div class="ps-title">Recruitment Module Enhancement</div>
+      <div class="ps-meta">hSenid · UAT In Progress · Go-Live 01 Aug 2026</div>
+      <div class="ps-meta mt-2" style="border-top:1px solid var(--card-border);padding-top:.6rem;color:var(--text-2);">
+        <i class="fa-solid fa-ticket me-1"></i> Req. submitted 16 Jul 2025 · #11394
+      </div>
+    </div>
+
+  </div>
+  <div class="kpi-meta mt-4" style="text-align:center;">Click a card to open the project dashboard</div>
 </div>
 
 <!-- NAVBAR -->
@@ -355,11 +420,16 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
 
 <!-- PROJECT SWITCHER -->
 <div class="project-switcher no-print">
-  <div class="project-pill active"><i class="fa-solid fa-building"></i> BHRL HRIS · Serendib Leisure</div>
+  <div class="project-pill" data-project="bhrl"><i class="fa-solid fa-building"></i> BHRL HRIS · Serendib Leisure</div>
+  <div class="project-pill" data-project="browns"><i class="fa-solid fa-hotel"></i> Browns Hotels &amp; Resorts <span class="status-chip" style="background:var(--orange-soft);color:var(--orange);margin-left:.4rem;">Approved</span></div>
+  <div class="project-pill" data-project="recruit"><i class="fa-solid fa-user-plus"></i> Recruitment Enhancement <span class="status-chip chip-current" style="margin-left:.4rem;">UAT</span></div>
   <div class="project-pill add-new" id="addProjectPill"><i class="fa-solid fa-plus"></i> Add Project</div>
+  <div class="project-pill" id="backToLandingPill" style="margin-left:auto;"><i class="fa-solid fa-grid-2"></i> All Projects</div>
 </div>
 
 <div id="dashboardRoot" class="container-fluid px-3 px-lg-4">
+
+  <div id="project-bhrl" class="project-page">
 
   <!-- EXECUTIVE DASHBOARD -->
   <section class="section-pad">
@@ -391,10 +461,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
       <div class="col-12 col-md-6 col-xl-3">
         <div class="glass-card kpi-card fade-up delayed-glow" style="animation-delay:.05s;">
           <div class="glow" style="background:var(--red);"></div>
-          <div class="d-flex justify-content-between align-items-start">
-            <div class="kpi-icon mb-2" style="background:var(--blue-soft);color:var(--blue);"><i class="fa-solid fa-vial"></i></div>
-            <span class="status-chip" style="background:var(--red-soft);color:var(--red);">Delayed</span>
-          </div>
+          <div class="kpi-icon mb-2" style="background:var(--blue-soft);color:var(--blue);"><i class="fa-solid fa-vial"></i></div>
           <div class="kpi-label">Current Phase</div>
           <div class="kpi-value" style="color:var(--blue);font-size:1.2rem;">User Acceptance Testing</div>
           <div class="kpi-meta">08 Jul 2026 – 10 Jul 2026</div>
@@ -445,13 +512,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
   <!-- TIMELINE -->
   <section class="section-pad">
     <div class="eyebrow">Roadmap</div>
-    <div class="section-title">Project Timeline — Projected vs Actual</div>
-    <div class="glass-card p-3 mt-2 mb-3" style="border-left:3px solid var(--red);">
-      <div class="d-flex align-items-center gap-2 flex-wrap">
-        <i class="fa-solid fa-circle-exclamation" style="color:var(--red);"></i>
-        <span class="kpi-meta">All milestones up to Workshops &amp; Configuration completed on schedule. <strong style="color:var(--red);">UAT is the only phase running behind plan.</strong> Struck-through dates show the original UAT plan; red dates show actual.</span>
-      </div>
-    </div>
+    <div class="section-title">Project Timeline</div>
     <div class="row mt-3">
       <div class="col-lg-7">
         <div class="vtimeline searchable" id="timelineWrap"></div>
@@ -512,7 +573,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
           <span class="status-chip chip-current">Current Phase</span>
           <h5 class="d-inline ms-2 mb-0">5. User Acceptance Testing (UAT)</h5>
         </div>
-        <div class="kpi-meta">Weight 15% · 08/07/2026 – 10/07/2026 <span style="color:var(--red);">(was 23/06/2026 – 24/07/2026)</span></div>
+        <div class="kpi-meta">Weight 15% · 08/07/2026 – 10/07/2026</div>
       </div>
       <div class="accordion searchable" id="uatAccordion"></div>
     </div>
@@ -522,7 +583,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
   <section class="section-pad pt-0">
     <div class="eyebrow">Schedule</div>
     <div class="section-title">Master Timeline — Mar 2025 to Aug 2026</div>
-    <div class="section-desc mb-2">Full project span from original kick-off, including the slippage between Cost Finalization and Data Preparation.</div>
+    <div class="section-desc mb-2">Full project span from original kick-off through Go-Live.</div>
     <div class="glass-card p-3 mt-2">
       <div class="gantt-wrap">
         <div class="gantt-grid" id="masterGanttGrid"></div>
@@ -531,20 +592,6 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
         <span class="kpi-meta"><span style="display:inline-block;width:10px;height:10px;background:var(--green);border-radius:3px;margin-right:5px;"></span>Completed</span>
         <span class="kpi-meta"><span style="display:inline-block;width:10px;height:10px;background:var(--blue);border-radius:3px;margin-right:5px;"></span>Current</span>
         <span class="kpi-meta"><span style="display:inline-block;width:10px;height:10px;background:var(--gray);border-radius:3px;margin-right:5px;"></span>Pending</span>
-        <span class="kpi-meta"><span style="display:inline-block;width:10px;height:10px;background:repeating-linear-gradient(45deg,var(--red),var(--red) 3px,transparent 3px,transparent 6px);border-radius:3px;margin-right:5px;border:1px solid var(--red);"></span>Delay / Idle Gap</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- DELAY CALLOUT -->
-  <section class="section-pad pt-0">
-    <div class="glass-card p-3 p-md-4" style="border-left:3px solid var(--red);">
-      <div class="d-flex align-items-start gap-3 flex-wrap">
-        <div class="kpi-icon" style="background:var(--red-soft);color:var(--red);flex-shrink:0;"><i class="fa-solid fa-clock-rotate-left"></i></div>
-        <div>
-          <h6 class="mb-1">Schedule Slippage Identified</h6>
-          <div class="kpi-meta">Cost Finalization closed on <strong>26 Feb 2026</strong>, but Data Preparation (project re-kick-off) only began on <strong>30 Apr 2026</strong> — an idle gap of <strong id="delayDaysNum">63 days</strong> between commercial closure and execution start. This gap is highlighted in red on the master timeline above and has pushed the original Go-Live target out accordingly.</div>
-        </div>
       </div>
     </div>
   </section>
@@ -612,10 +659,323 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
     </div>
   </section>
 
+  </div><!-- /project-bhrl -->
+
+  <!-- ============== BROWNS HOTELS & RESORTS PROJECT PAGE ============== -->
+  <div id="project-browns" class="project-page" style="display:none;">
+
+    <section class="section-pad">
+      <div class="eyebrow">Executive Overview</div>
+      <div class="section-title">Browns Hotels &amp; Resorts — HRIS Implementation</div>
+      <div class="section-desc mb-3">PeoplesHR by hSenid · Board Approved 04 Nov 2025 · Pending Kickoff</div>
+
+      <div class="row g-3">
+        <div class="col-12 col-md-6 col-xl-3">
+          <div class="glass-card kpi-card fade-up">
+            <div class="glow" style="background:var(--orange);"></div>
+            <div class="kpi-icon mb-2" style="background:var(--orange-soft);color:var(--orange);"><i class="fa-solid fa-stamp"></i></div>
+            <div class="kpi-label">Project Status</div>
+            <div class="kpi-value" style="color:var(--orange);font-size:1.3rem;">Approved</div>
+            <div class="kpi-meta">Not yet kicked off</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+          <div class="glass-card kpi-card fade-up" style="animation-delay:.05s;">
+            <div class="glow" style="background:var(--blue);"></div>
+            <div class="kpi-icon mb-2" style="background:var(--blue-soft);color:var(--blue);"><i class="fa-solid fa-calendar-check"></i></div>
+            <div class="kpi-label">Approval Date</div>
+            <div class="kpi-value" style="color:var(--blue);font-size:1.3rem;">04 Nov 2025</div>
+            <div class="kpi-meta">Board paper signed off</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+          <div class="glass-card kpi-card fade-up" style="animation-delay:.1s;">
+            <div class="glow" style="background:var(--green);"></div>
+            <div class="kpi-icon mb-2" style="background:var(--green-soft);color:var(--green);"><i class="fa-solid fa-users"></i></div>
+            <div class="kpi-label">Scope</div>
+            <div class="kpi-value" style="color:var(--green);font-size:1.3rem;">1,050 Employees</div>
+            <div class="kpi-meta">14 legal entities</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+          <div class="glass-card kpi-card fade-up" style="animation-delay:.15s;">
+            <div class="glow" style="background:var(--purple);"></div>
+            <div class="kpi-icon mb-2" style="background:rgba(154,123,255,.15);color:var(--purple);"><i class="fa-solid fa-handshake"></i></div>
+            <div class="kpi-label">Vendor</div>
+            <div class="kpi-value" style="color:var(--purple);font-size:1.3rem;">hSenid</div>
+            <div class="kpi-meta">PeoplesHR · Sri Lanka</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COST BREAKDOWN -->
+    <section class="section-pad pt-0">
+      <div class="eyebrow">Investment</div>
+      <div class="section-title">Approved Cost Breakdown</div>
+      <div class="row g-3 mt-2">
+        <div class="col-lg-7">
+          <div class="glass-card p-3 p-md-4">
+            <h6 class="mb-3"><i class="fa-solid fa-file-invoice-dollar me-2" style="color:var(--green);"></i>Subscription &amp; Setup Costs</h6>
+            <div class="table-responsive"><table class="table table-glass mb-0">
+              <thead><tr><th>Item</th><th>Basis</th><th>Cost (USD)</th></tr></thead>
+              <tbody>
+                <tr><td>Annual Subscription</td><td>1,200 users fixed (USD 0.75/user)</td><td class="mono fw-bold" style="color:var(--green);">10,725 / yr</td></tr>
+                <tr><td>Additional Headcount</td><td>Per user beyond 1,200</td><td class="mono">0.75 / user</td></tr>
+                <tr><td>PeoplesHR Cloud Set-up &amp; Training</td><td>One-time, entity additions</td><td class="mono fw-bold" style="color:var(--orange);">10,500 (one-time)</td></tr>
+              </tbody>
+            </table></div>
+            <div class="kpi-meta mt-2"><i class="fa-solid fa-circle-info me-1"></i>Annual subscription option selected over monthly (board annotation), at USD 0.75/user vs USD 0.875/user monthly rate.</div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="glass-card p-3 p-md-4 h-100">
+            <h6 class="mb-3"><i class="fa-solid fa-signature me-2" style="color:var(--blue);"></i>Approval Chain</h6>
+            <ul class="mb-0" style="font-size:.85rem;color:var(--text-1);padding-left:1.1rem;">
+              <li>Indika Dharmawansa — Head of HR, Browns Hotels &amp; Resorts <em>(originator)</em></li>
+              <li>Maduka Jayawardene — Senior Manager, HR <em>(originator)</em></li>
+              <li>Mohan Perera — Head of IT, Browns Hotels &amp; Resorts</li>
+              <li>Eksath Wijeratne — CEO, Browns Hotels &amp; Resorts</li>
+              <li>Rukmal Wijesinghe — Head of HR Corporate, LOLC Group</li>
+              <li>Pradeep Uluwaduge — CHRO, LOLC Group</li>
+              <li>Group Managing Director, LOLC Group <em>(final approval)</em></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULES -->
+    <section class="section-pad pt-0">
+      <div class="eyebrow">Scope</div>
+      <div class="section-title">Approved Critical HRIS Modules</div>
+      <div class="row g-3 mt-2">
+        <div class="col-12">
+          <div class="glass-card p-3 p-md-4">
+            <div class="row g-2">
+              <div class="col-md-6 col-lg-4"><div class="d-flex align-items-center gap-2 p-2"><i class="fa-solid fa-id-card" style="color:var(--green);"></i> Employee Information Management</div></div>
+              <div class="col-md-6 col-lg-4"><div class="d-flex align-items-center gap-2 p-2"><i class="fa-solid fa-calendar-days" style="color:var(--blue);"></i> Leave &amp; Attendance Management</div></div>
+              <div class="col-md-6 col-lg-4"><div class="d-flex align-items-center gap-2 p-2"><i class="fa-solid fa-user-clock" style="color:var(--purple);"></i> Probation / Contract Evaluation</div></div>
+              <div class="col-md-6 col-lg-4"><div class="d-flex align-items-center gap-2 p-2"><i class="fa-solid fa-chart-line" style="color:var(--orange);"></i> Performance Evaluation</div></div>
+              <div class="col-md-6 col-lg-4"><div class="d-flex align-items-center gap-2 p-2"><i class="fa-solid fa-money-check-dollar" style="color:var(--green);"></i> Payroll Management</div></div>
+              <div class="col-md-6 col-lg-4"><div class="d-flex align-items-center gap-2 p-2"><i class="fa-solid fa-arrows-rotate" style="color:var(--blue);"></i> All Employee Dynamic Changes</div></div>
+              <div class="col-md-6 col-lg-4"><div class="d-flex align-items-center gap-2 p-2"><i class="fa-solid fa-file-lines" style="color:var(--purple);"></i> Letter Generations</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BACKGROUND -->
+    <section class="section-pad pt-0">
+      <div class="eyebrow">Background</div>
+      <div class="section-title">Current State</div>
+      <div class="glass-card p-3 p-md-4 mt-2">
+        <p class="kpi-meta mb-2" style="font-size:.85rem;">Browns Hotels &amp; Resorts manages 14 legal entities with a total workforce of 1,050 employees. Each hotel has a dedicated HR Partner reporting functionally to the Head of HR (Corporate) and administratively to the respective GM/Resident Manager.</p>
+        <p class="kpi-meta mb-0" style="font-size:.85rem;">Hotels acquired from Hemas currently run a separate, detached HRIS that is no longer functioning effectively — it now operates only as a firewall separation, with the vendor agreement inactive. This requires significant manual intervention for day-to-day HR operations, leading to excessive paperwork, duplication of effort, and increased man-hours.</p>
+      </div>
+    </section>
+
+    <!-- PROJECT TIMELINE -->
+    <section class="section-pad pt-0">
+      <div class="eyebrow">Roadmap</div>
+      <div class="section-title">Project Timeline</div>
+      <div class="section-desc mb-2">Click a milestone to view full details.</div>
+      <div class="vtimeline mt-3">
+        <div class="tl-item glass-card done" id="brownsApprovalMilestone" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#brownsMilestoneModal">
+          <div class="tl-dot"><i class="fa-solid fa-check"></i></div>
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+              <div class="tl-title">1. Board Approval &amp; Cost Finalization <i class="fa-solid fa-circle-info ms-1" style="color:var(--text-2);font-size:.78rem;"></i></div>
+              <div class="tl-meta">04 Nov 2025 · USD 10,725/yr subscription + USD 10,500 one-time setup</div>
+            </div>
+            <span class="status-chip chip-done">Completed</span>
+          </div>
+        </div>
+        <div class="tl-item glass-card pending">
+          <div class="tl-dot"><i class="fa-solid fa-clock"></i></div>
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+              <div class="tl-title">2. Project Kickoff</div>
+              <div class="tl-meta">Date to be confirmed</div>
+            </div>
+            <span class="status-chip chip-pending">Pending</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AWAITING KICKOFF -->
+    <section class="section-pad pt-0">
+      <div class="glass-card p-4 text-center" style="border:1px dashed var(--card-border);">
+        <i class="fa-solid fa-hourglass-half mb-2" style="font-size:1.6rem;color:var(--text-2);"></i>
+        <div class="kpi-meta">Full execution timeline, milestones, and Gantt chart will appear here once kickoff dates are confirmed.</div>
+      </div>
+    </section>
+
+  </div><!-- /project-browns -->
+
+  <!-- ============== RECRUITMENT ENHANCEMENT PROJECT PAGE ============== -->
+  <div id="project-recruit" class="project-page" style="display:none;">
+
+    <section class="section-pad">
+      <div class="eyebrow">Executive Overview</div>
+      <div class="section-title">Recruitment Module Enhancement</div>
+      <div class="section-desc mb-3">hSenid · HRIS Team · UAT In Progress · Go-Live 01 Aug 2026</div>
+
+      <div class="row g-3">
+        <div class="col-12 col-md-6 col-xl-3">
+          <div class="glass-card kpi-card fade-up delayed-glow">
+            <div class="glow" style="background:var(--blue);"></div>
+            <div class="kpi-icon mb-2" style="background:var(--blue-soft);color:var(--blue);"><i class="fa-solid fa-vial"></i></div>
+            <div class="kpi-label">Current Phase</div>
+            <div class="kpi-value" style="color:var(--blue);font-size:1.2rem;">User Acceptance Testing</div>
+            <div class="kpi-meta">In Progress</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+          <div class="glass-card kpi-card fade-up" style="animation-delay:.05s;">
+            <div class="glow" style="background:var(--green);"></div>
+            <div class="kpi-icon mb-2" style="background:var(--green-soft);color:var(--green);"><i class="fa-solid fa-stamp"></i></div>
+            <div class="kpi-label">Project Approval</div>
+            <div class="kpi-value" style="color:var(--green);font-size:1.3rem;">15 Dec 2025</div>
+            <div class="kpi-meta">Planned: 25 Nov 2025</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+          <div class="glass-card kpi-card fade-up" style="animation-delay:.1s;">
+            <div class="glow" style="background:var(--red);"></div>
+            <div class="kpi-icon mb-2" style="background:var(--red-soft);color:var(--red);"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="kpi-label">Dev &amp; UAT Delivery Delay</div>
+            <div class="kpi-value" style="color:var(--red);font-size:1.3rem;">+55 Days</div>
+            <div class="kpi-meta">Delivered 24 Jun vs 30 Apr planned</div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+          <div class="glass-card kpi-card fade-up" style="animation-delay:.15s;">
+            <div class="glow" style="background:var(--orange);"></div>
+            <div class="kpi-icon mb-2" style="background:var(--orange-soft);color:var(--orange);"><i class="fa-solid fa-rocket"></i></div>
+            <div class="kpi-label">Go-Live Target</div>
+            <div class="kpi-value" style="color:var(--orange);font-size:1.3rem;">01 Aug 2026</div>
+            <div class="kpi-meta" id="recruitCountdown">Calculating…</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REQ HANDOVER CALLOUT -->
+    <section class="section-pad pt-0">
+      <div class="glass-card p-3 p-md-4" style="border-left:3px solid var(--purple);">
+        <div class="d-flex align-items-start gap-3 flex-wrap">
+          <div class="kpi-icon" style="background:rgba(154,123,255,.15);color:var(--purple);flex-shrink:0;"><i class="fa-solid fa-ticket"></i></div>
+          <div>
+            <h6 class="mb-1">Initial Requirement Submission</h6>
+            <div class="kpi-meta">Recruitment module requirements formally handed over to hSenid on <strong>16 July 2025</strong> via support ticket <span class="mono" style="color:var(--purple);">#11394 · 129004-|-Recruitment module requirements</span>. This was the trigger point for vendor development engagement.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DELAY CALLOUT -->
+    <section class="section-pad pt-0">
+      <div class="glass-card p-3 p-md-4" style="border-left:3px solid var(--red);">
+        <div class="d-flex align-items-start gap-3 flex-wrap">
+          <div class="kpi-icon" style="background:var(--red-soft);color:var(--red);flex-shrink:0;"><i class="fa-solid fa-clock-rotate-left"></i></div>
+          <div>
+            <h6 class="mb-1">Development Delay — hSenid</h6>
+            <div class="kpi-meta">Development &amp; UAT Build was planned for delivery by <strong>30 Apr 2026</strong>. hSenid delivered on <strong style="color:var(--red);">24 Jun 2026</strong> — approximately <strong style="color:var(--red);">55 days late</strong>. UAT commenced immediately upon receipt. HRIS reported issues on 2 Jul, 6 Jul, 8 Jul, 15 Jul, and 20 Jul. First joint UAT session with business users was held on 23 Jul — additional gaps and functional issues were identified. hSenid is currently addressing these prior to the second UAT round.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MILESTONE TIMELINE -->
+    <section class="section-pad pt-0">
+      <div class="eyebrow">Roadmap</div>
+      <div class="section-title">Project Timeline — Projected vs Actual</div>
+      <div class="section-desc mb-2">Click a milestone for full details.</div>
+      <div class="vtimeline mt-3" id="recruitTimelineWrap"></div>
+    </section>
+
+    <!-- MILESTONE TABLE -->
+    <section class="section-pad pt-0">
+      <div class="glass-card p-3 p-md-4">
+        <h6 class="mb-3"><i class="fa-solid fa-table me-2" style="color:var(--purple);"></i>Milestone Summary Table</h6>
+        <div class="table-responsive">
+          <table class="table table-glass mb-0">
+            <thead><tr><th>Milestone</th><th>Planned</th><th>Actual</th><th>Status</th><th>Responsible</th></tr></thead>
+            <tbody id="recruitMilestoneTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /project-recruit -->
+
+  <!-- BROWNS MILESTONE MODAL -->
+  <div class="modal fade" id="brownsMilestoneModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="background:var(--bg-1);border:1px solid var(--card-border);border-radius:var(--radius-lg);">
+        <div class="modal-header" style="border-color:var(--card-border);">
+          <h5 class="modal-title"><i class="fa-solid fa-file-invoice-dollar me-2" style="color:var(--green);"></i>Board Approval &amp; Cost Finalization</h5>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3 d-flex gap-4 flex-wrap">
+            <div><div class="kpi-meta">Approval Date</div><div class="fw-bold">04 Nov 2025</div></div>
+            <div><div class="kpi-meta">Status</div><div class="fw-bold">Approved</div></div>
+            <div><div class="kpi-meta">Vendor</div><div class="fw-bold">hSenid · PeoplesHR</div></div>
+          </div>
+
+          <h6 class="mb-2">Cost Breakdown</h6>
+          <div class="table-responsive mb-3"><table class="table table-glass mb-0">
+            <thead><tr><th>Item</th><th>Basis</th><th>Cost (USD)</th></tr></thead>
+            <tbody>
+              <tr><td>Annual Subscription</td><td>1,200 users fixed (USD 0.75/user)</td><td class="mono fw-bold" style="color:var(--green);">10,725 / yr</td></tr>
+              <tr><td>Additional Headcount</td><td>Per user beyond 1,200</td><td class="mono">0.75 / user</td></tr>
+              <tr><td>PeoplesHR Cloud Set-up &amp; Training</td><td>One-time, entity additions</td><td class="mono fw-bold" style="color:var(--orange);">10,500 (one-time)</td></tr>
+            </tbody>
+          </table></div>
+          <div class="kpi-meta mb-3"><i class="fa-solid fa-circle-info me-1"></i>Annual subscription option selected over monthly (board annotation), at USD 0.75/user vs USD 0.875/user monthly rate.</div>
+
+          <h6 class="mb-2">Approval Chain</h6>
+          <ul class="mb-0" style="font-size:.85rem;color:var(--text-1);padding-left:1.1rem;">
+            <li>Indika Dharmawansa — Head of HR, Browns Hotels &amp; Resorts <em>(originator)</em></li>
+            <li>Maduka Jayawardene — Senior Manager, HR <em>(originator)</em></li>
+            <li>Mohan Perera — Head of IT, Browns Hotels &amp; Resorts</li>
+            <li>Eksath Wijeratne — CEO, Browns Hotels &amp; Resorts</li>
+            <li>Rukmal Wijesinghe — Head of HR Corporate, LOLC Group</li>
+            <li>Pradeep Uluwaduge — CHRO, LOLC Group</li>
+            <li>Group Managing Director, LOLC Group <em>(final approval)</em></li>
+          </ul>
+        </div>
+        <div class="modal-footer" style="border-color:var(--card-border);">
+          <button class="btn btn-accent" id="brownsModalExportBtn"><i class="fa-solid fa-file-pdf me-2"></i>Export</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- PRESENTATION MODE TOGGLE -->
   <section class="section-pad pt-0 text-center no-print">
     <button class="btn btn-outline-glass px-4 py-2" id="presentModeBtn"><i class="fa-solid fa-display me-2"></i>Presentation Mode</button>
   </section>
+
+  <!-- RECRUIT MILESTONE MODAL -->
+  <div class="modal fade" id="recruitModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="background:var(--bg-1);border:1px solid var(--card-border);border-radius:var(--radius-lg);">
+        <div class="modal-header" style="border-color:var(--card-border);">
+          <h5 class="modal-title" id="recruitModalTitle"></h5>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="recruitModalBody"></div>
+        <div class="modal-footer" style="border-color:var(--card-border);">
+          <button class="btn btn-accent" onclick="exportElement(document.getElementById('recruitModalBody'),'Recruit_Milestone.pdf')"><i class="fa-solid fa-file-pdf me-2"></i>Export</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -648,13 +1008,20 @@ const MILESTONES = [
   {id:1,name:"Pre-Implementation Activities",weight:10,start:"2025-03-03",end:"2025-07-16",status:"done",progress:100,
    activities:["Initial discussions with management","Requirement clarification sessions","Current process study","Solution presentations","Module demonstrations","Gap analysis discussions","Scope definition"]},
   {id:2,name:"Cost Finalization",weight:10,start:"2025-07-17",end:"2026-02-26",status:"done",progress:100,
-   activities:["Database finalization","User count validation","Quotation submission","Commercial discussions","Revised quotation approval","PO approval","Delivery order","Contract finalization"]},
-  {id:3,name:"Data Preparation",weight:20,start:"2026-04-30",end:"2026-05-22",status:"done",progress:100,
+   activities:["Database finalization","User count validation","Quotation submission","Commercial discussions","Revised quotation approval","PO approval","Delivery order","Contract finalization"],
+   costSummary:{
+     vendor:"hSenid (PeoplesHR)",
+     rows:[
+       {item:"Monthly Subscription", basis:"Fixed for 1,200 users · USD 0.875/user · extra users at USD 0.90/user", cost:"USD 1,050 / mo"},
+       {item:"Annual Subscription", basis:"Fixed for 1,200 users · USD 0.75/user · extra users at USD 0.75/user", cost:"USD 10,725 / yr"}
+     ],
+     note:"Annual subscription option selected over monthly, per board approval."
+   }},
+  {id:3,name:"Data Preparation",weight:20,start:"2026-02-16",end:"2026-05-22",status:"done",progress:100,
    activities:["Project kick-off","Project team formation","System installation","Environment setup","Company parameter setup","Master data collection and cleansing","Employee data upload","Organizational structure finalization","Grading structure finalization","Department and designation mapping"]},
   {id:4,name:"Workshops & Configuration",weight:25,start:"2026-05-23",end:"2026-06-19",status:"done",progress:100,
    activities:["Employee Information Management workshop","Employee Life Cycle workshop","Leave Management workshop","Attendance Management workshop","Probation & Contract Evaluation workshop","Workflow and approval hierarchy discussions","User role and security setup","Letter template setup","Organization structure configuration","Grade and designation configuration","Shift and roster configuration","Dashboard and report configuration","Mobile App configuration","Business process validation sessions","Configuration sign-off"]},
   {id:5,name:"User Acceptance Testing (UAT)",weight:15,start:"2026-07-08",end:"2026-07-10",status:"current",progress:35,
-   originalStart:"2026-06-23",originalEnd:"2026-07-24",
    activities:["UAT plan preparation","Test scenario preparation","Employee Information Management testing","Employee Life Cycle testing","Leave Management testing","Attendance Management testing","Probation Evaluation testing","Workflow testing","Approval hierarchy validation","ESS and MSS testing","Mobile App testing","Letter generation validation","Report validation","Issue logging","Defect fixing","Retesting","User sign-off","Final UAT sign-off"]},
   {id:6,name:"Go Live",weight:10,start:"2026-08-03",end:"2026-08-03",status:"pending",progress:0,
    activities:["Production environment preparation","Data migration validation","Final parameter verification","User account activation","Production deployment","Go-live support"]},
@@ -712,10 +1079,62 @@ function fmt(d){
   return dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
 }
 
+/* ============== RECRUIT MILESTONES DATA ============== */
+const RECRUIT_MILESTONES = [
+  {id:1, name:"Project Approval & Procurement", planned:"25 Nov 2025", actual:"15 Dec 2025", status:"done",
+   responsible:"HOHR / Sachith / Administration / hSenid",
+   desc:"Initial recruitment module requirements handed over to hSenid on 16 July 2025 (Ticket: #11394 · 129004-|-Recruitment module requirements). Following this, the project was formally approved by GMD. Vendor confirmation completed. Data requests and follow-ups completed. Proforma Invoice (PI) requested, received, and approved. Purchase Order (PO) processed and issued to hSenid, completing the procurement process."},
+  {id:2, name:"Development & UAT Build Delivery", planned:"30 Apr 2026", actual:"24 Jun 2026", status:"delayed",
+   responsible:"hSenid",
+   desc:"hSenid completed the development and delivered the UAT version to the HRIS team on 24 June 2026, approximately 55 days later than the planned completion date."},
+  {id:3, name:"User Acceptance Testing (UAT)", planned:"24 Jun 2026", actual:"In Progress", status:"current",
+   responsible:"HRIS / Business Users / hSenid",
+   desc:"UAT commenced upon receipt of the system. HRIS performed multiple rounds of testing and reported issues on 2 Jul, 6 Jul, 8 Jul, 15 Jul, and 20 Jul. The first joint UAT session with Business Users and hSenid was conducted on 23 Jul, during which additional business process gaps and functional issues were identified. hSenid is currently addressing the reported issues prior to the second UAT."},
+  {id:4, name:"Business UAT Sign-off", planned:"30 Jul 2026", actual:"Pending", status:"pending",
+   responsible:"Business Owners / HOHR",
+   desc:"Final business validation and sign-off after successful completion of the second UAT and resolution of critical issues."},
+  {id:5, name:"Production Go-Live", planned:"01 Aug 2026", actual:"Pending", status:"pending",
+   responsible:"HRIS / hSenid",
+   desc:"Recruitment Enhancement Solution deployment to the production environment."},
+  {id:7, name:"Hyper Care & Project Closure", planned:"15 Aug 2026", actual:"Pending", status:"pending",
+   responsible:"HRIS / hSenid",
+   desc:"Post Go-Live support, issue monitoring, knowledge transfer, and formal project closure."}
+];
+
 /* ============== LOADER ============== */
 window.addEventListener('load', ()=>{
-  setTimeout(()=>document.getElementById('loader').classList.add('hide'), 500);
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('hide');
+    showLanding();
+  }, 500);
 });
+
+function showLanding(){
+  document.getElementById('projectLanding').style.display='flex';
+  document.querySelector('.navbar-glass').style.display='none';
+  document.querySelector('.project-switcher').style.display='none';
+  document.getElementById('dashboardRoot').style.display='none';
+}
+
+function showProject(key){
+  document.getElementById('projectLanding').style.display='none';
+  document.querySelector('.navbar-glass').style.display='';
+  document.querySelector('.project-switcher').style.display='';
+  document.getElementById('dashboardRoot').style.display='';
+  document.querySelectorAll('.project-page').forEach(p=>p.style.display='none');
+  const page = document.getElementById('project-'+key);
+  if(page) page.style.display='';
+  document.querySelectorAll('.project-pill[data-project]').forEach(p=>p.classList.toggle('active', p.dataset.project===key));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* Landing card clicks */
+document.querySelectorAll('.project-select-card').forEach(card=>{
+  card.addEventListener('click', ()=> showProject(card.dataset.goto));
+});
+
+/* Back to landing pill */
+document.getElementById('backToLandingPill').addEventListener('click', ()=> showLanding());
 
 /* ============== CLOCK ============== */
 function tickClock(){
@@ -749,7 +1168,6 @@ function tickCountdown(){
   document.getElementById('countdownGoLive').textContent=d+" days remaining";
 }
 setInterval(tickCountdown,1000); tickCountdown();
-document.getElementById('delayDaysNum').textContent = daysBetween(DELAY_GAP.start, DELAY_GAP.end) + " days";
 
 /* ============== ANIMATED COUNTER / RING ============== */
 function animateCounter(el,target,suffix=''){
@@ -768,28 +1186,12 @@ MILESTONES.forEach(m=>{
   const div = document.createElement('div');
   div.className = `tl-item glass-card ${m.status}`;
   div.dataset.search = (m.name+" "+m.activities.join(" ")+" "+fmt(m.start)+" "+fmt(m.end)).toLowerCase();
-  const isDelayed = m.id === 5; // only UAT has slipped — other milestones ran on schedule
-  let dateBlock;
-  if(isDelayed){
-    const origStart = m.originalStart || shiftDate(m.start, -DELAY_DAYS);
-    const origEnd = m.originalEnd || shiftDate(m.end, -DELAY_DAYS);
-    const slipDays = daysBetween(origStart, m.start);
-    dateBlock = `
-      <div class="tl-meta">
-        <span style="text-decoration:line-through;">Projected: ${fmt(origStart)} – ${fmt(origEnd)}</span>
-        &nbsp;→&nbsp;
-        <span style="color:var(--red);font-weight:600;">Actual: ${fmt(m.start)} – ${fmt(m.end)}</span>
-        <span class="mono" style="color:var(--red);">(+${slipDays}d)</span>
-        &nbsp;· Weight ${m.weight}%
-      </div>`;
-  } else {
-    dateBlock = `<div class="tl-meta">${fmt(m.start)} – ${fmt(m.end)} · Weight ${m.weight}%</div>`;
-  }
+  const dateBlock = `<div class="tl-meta">${fmt(m.start)} – ${fmt(m.end)} · Weight ${m.weight}%</div>`;
   div.innerHTML = `
     <div class="tl-dot"><i class="fa-solid ${m.status==='done'?'fa-check':m.status==='current'?'fa-spinner':'fa-clock'}"></i></div>
     <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
       <div>
-        <div class="tl-title">${m.id}. ${m.name}${isDelayed?' <span class="status-chip" style="background:var(--red-soft);color:var(--red);">Delayed</span>':''}</div>
+        <div class="tl-title">${m.id}. ${m.name}</div>
         ${dateBlock}
       </div>
       <span class="status-chip chip-${m.status==='done'?'done':m.status==='current'?'current':'pending'}">${STATUS_LABEL[m.status]}</span>
@@ -827,6 +1229,19 @@ document.querySelectorAll('[data-bs-target="#milestoneModal"]').forEach(card=>{
   card.addEventListener('click',()=>{
     const m = MILESTONES.find(x=>x.id==card.dataset.id);
     document.getElementById('modalTitle').textContent = `Milestone ${m.id}: ${m.name}`;
+    let summaryHtml = '';
+    if(m.costSummary){
+      summaryHtml = `
+        <h6 class="mt-3">Summary</h6>
+        <div class="kpi-meta mb-2">Vendor: <strong>${m.costSummary.vendor}</strong></div>
+        <div class="table-responsive mb-2"><table class="table table-glass mb-0">
+          <thead><tr><th>Item</th><th>Basis</th><th>Cost</th></tr></thead>
+          <tbody>
+            ${m.costSummary.rows.map(r=>`<tr><td>${r.item}</td><td>${r.basis}</td><td class="mono fw-bold" style="color:var(--green);">${r.cost}</td></tr>`).join('')}
+          </tbody>
+        </table></div>
+        <div class="kpi-meta"><i class="fa-solid fa-circle-info me-1"></i>${m.costSummary.note}</div>`;
+    }
     document.getElementById('modalBody').innerHTML = `
       <div class="mb-3 d-flex gap-4 flex-wrap">
         <div><div class="kpi-meta">Weight</div><div class="fw-bold">${m.weight}%</div></div>
@@ -834,7 +1249,8 @@ document.querySelectorAll('[data-bs-target="#milestoneModal"]').forEach(card=>{
         <div><div class="kpi-meta">Dates</div><div class="fw-bold">${fmt(m.start)} – ${fmt(m.end)}</div></div>
       </div>
       <h6>Activities</h6>
-      <ul>${m.activities.map(a=>`<li>${a}</li>`).join('')}</ul>`;
+      <ul>${m.activities.map(a=>`<li>${a}</li>`).join('')}</ul>
+      ${summaryHtml}`;
     document.getElementById('modalExportBtn').onclick = ()=>exportElement(document.getElementById('modalBody'), `Milestone_${m.id}_${m.name.replace(/\s+/g,'_')}.pdf`);
   });
 });
@@ -891,23 +1307,6 @@ MILESTONES.forEach(m=>{
     </div>`;
   masterGanttGrid.appendChild(row);
 });
-
-/* Delay / idle gap band as its own row */
-(function(){
-  const s = new Date(DELAY_GAP.start), e = new Date(DELAY_GAP.end);
-  const left = ((s-mStart)/86400000/mTotalDays)*100;
-  const width = Math.max(0.6,((e-s)/86400000/mTotalDays)*100);
-  const gapDays = daysBetween(DELAY_GAP.start, DELAY_GAP.end);
-  const row = document.createElement('div');
-  row.className = "gantt-row";
-  row.innerHTML = `
-    <div class="gantt-label" style="color:var(--red);font-weight:600;">⚠ Delay / Idle Gap</div>
-    <div class="gantt-track">
-      <div class="gantt-bar" style="left:${left}%;width:${width}%;background:repeating-linear-gradient(45deg,var(--red),var(--red) 4px,transparent 4px,transparent 8px);border:1px solid var(--red);"
-        title="Idle gap between Cost Finalization and Data Preparation\n${fmt(DELAY_GAP.start)} – ${fmt(DELAY_GAP.end)}\nDuration: ${gapDays} days"></div>
-    </div>`;
-  masterGanttGrid.appendChild(row);
-})();
 
 /* ============== TODAY MARKER (shared helper) ============== */
 function renderTodayLine(gridEl, rangeStart, rangeEnd){
@@ -1039,7 +1438,10 @@ document.getElementById('fullScreenBtn').addEventListener('click', ()=>{
 /* ============== PRESENTATION MODE ============== */
 function setPresentationMode(on){
   document.body.classList.toggle('presentation-mode', on);
-  document.querySelector('.navbar-glass').style.display = on ? 'none' : '';
+  const nav = document.querySelector('.navbar-glass');
+  const switcher = document.querySelector('.project-switcher');
+  if(nav) nav.style.display = on ? 'none' : '';
+  if(switcher) switcher.style.display = on ? 'none' : '';
   const btn = document.getElementById('presentModeBtn');
   if(btn) btn.innerHTML = on ? '<i class="fa-solid fa-xmark me-2"></i>Exit Presentation' : '<i class="fa-solid fa-display me-2"></i>Presentation Mode';
   document.getElementById('presentToggleFloat').style.display = on ? 'flex' : 'none';
@@ -1054,10 +1456,151 @@ document.getElementById('presentToggleFloat').addEventListener('click', ()=> set
 /* Default to presentation mode on load (chrome hidden; fullscreen needs a user click so we leave that to the toggle) */
 setPresentationMode(true);
 
-/* ============== PROJECT SWITCHER (placeholder for future projects) ============== */
-document.getElementById('addProjectPill').addEventListener('click', ()=>{
-  alert('This is where additional project dashboards will appear once added — each will show up here as its own tab for quick switching.');
+/* ============== PROJECT SWITCHER ============== */
+document.querySelectorAll('.project-pill[data-project]').forEach(pill=>{
+  pill.addEventListener('click', ()=> showProject(pill.dataset.project));
 });
+document.getElementById('addProjectPill').addEventListener('click', ()=>{
+  alert('Additional project dashboards will appear here as tabs once added.');
+});
+
+/* ============== RECRUIT TIMELINE RENDER ============== */
+const recruitTL = document.getElementById('recruitTimelineWrap');
+if(recruitTL){
+  RECRUIT_MILESTONES.forEach(m=>{
+    const statusClass = m.status==='done'?'done':m.status==='current'?'current':'pending';
+    const icon = m.status==='done'?'fa-check':m.status==='delayed'?'fa-triangle-exclamation':m.status==='current'?'fa-spinner':'fa-clock';
+    const isDelayed = m.status==='delayed';
+    const div = document.createElement('div');
+    div.className = `tl-item glass-card ${isDelayed?'current':statusClass}`;
+    div.style.cursor='pointer';
+    div.dataset.recruitId = m.id;
+    div.innerHTML = `
+      <div class="tl-dot" style="${isDelayed?'background:var(--red);color:#fff;':''}"><i class="fa-solid ${icon}"></i></div>
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+        <div>
+          <div class="tl-title">${m.id}. ${m.name} ${isDelayed?'<span class="status-chip recruit-tl-delayed">Delayed</span>':''}</div>
+          <div class="tl-meta">
+            ${isDelayed
+              ? `<span style="text-decoration:line-through;color:var(--text-2);">Planned: ${m.planned}</span> → <span style="color:var(--red);font-weight:600;">Actual: ${m.actual}</span>`
+              : `Planned: ${m.planned}${m.actual!=='Pending'&&m.actual!=='In Progress'?' · Actual: '+m.actual:m.actual==='In Progress'?' · <span style="color:var(--blue);font-weight:600;">In Progress</span>':''}`
+            }
+          </div>
+          <div class="tl-meta mt-1" style="color:var(--text-2);">${m.responsible}</div>
+        </div>
+        <span class="status-chip ${isDelayed?'recruit-tl-delayed':m.status==='current'?'recruit-tl-progress':m.status==='done'?'recruit-tl-done':'recruit-tl-planned'}">${isDelayed?'Delayed':m.status==='current'?'In Progress':m.status==='done'?'Completed':'Planned'}</span>
+      </div>`;
+    div.addEventListener('click', ()=> openRecruitModal(m));
+    recruitTL.appendChild(div);
+  });
+}
+
+/* Populate milestone table */
+const recruitTable = document.getElementById('recruitMilestoneTable');
+if(recruitTable){
+  RECRUIT_MILESTONES.forEach(m=>{
+    const isDelayed = m.status==='delayed';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${m.id}. ${m.name}</td>
+      <td>${m.planned}</td>
+      <td class="${isDelayed?'recruit-tl-actual':''}">${m.actual}</td>
+      <td><span class="status-chip ${isDelayed?'recruit-tl-delayed':m.status==='current'?'recruit-tl-progress':m.status==='done'?'recruit-tl-done':'recruit-tl-planned'}">${isDelayed?'Delayed':m.status==='current'?'In Progress':m.status==='done'?'Completed':'Planned'}</span></td>
+      <td style="font-size:.78rem;color:var(--text-2);">${m.responsible}</td>`;
+    recruitTable.appendChild(tr);
+  });
+}
+
+/* Recruit milestone modal */
+function openRecruitModal(m){
+  const isDelayed = m.status==='delayed';
+  const statusLabel = isDelayed?'Delayed':m.status==='current'?'In Progress':m.status==='done'?'Completed':'Planned';
+  const statusChipClass = isDelayed?'recruit-tl-delayed':m.status==='current'?'recruit-tl-progress':m.status==='done'?'recruit-tl-done':'recruit-tl-planned';
+
+  document.getElementById('recruitModalTitle').innerHTML =
+    `<i class="fa-solid ${m.status==='done'?'fa-circle-check':m.status==='current'||isDelayed?'fa-spinner':'fa-clock'} me-2"></i>${m.id}. ${m.name}`;
+
+  /* Build structured key-value rows */
+  const rows = [
+    {label:'Status',       value:`<span class="status-chip ${statusChipClass}">${statusLabel}</span>`},
+    {label:'Planned Date', value:`<span class="mono">${m.planned}</span>`},
+    {label:'Actual Date',  value: isDelayed
+        ? `<span class="mono recruit-tl-actual">${m.actual}</span> <span class="mono" style="color:var(--text-2);">(+55 days late)</span>`
+        : m.actual==='In Progress'
+          ? `<span style="color:var(--blue);font-weight:600;">In Progress</span>`
+          : m.actual==='Pending'
+            ? `<span style="color:var(--text-2);">Pending</span>`
+            : `<span class="mono">${m.actual}</span>`},
+    {label:'Responsible',  value: m.responsible.split(' / ').map(r=>`<span class="status-chip" style="background:var(--blue-soft);color:var(--blue);margin:.1rem .2rem .1rem 0;">${r}</span>`).join('')},
+  ];
+
+  /* Per-milestone structured event list */
+  const events = {
+    1:[
+      {date:'16 Jul 2025', event:'Recruitment module requirements submitted to hSenid', ref:'Ticket #11394 · 129004-|-Recruitment module requirements'},
+      {date:'25 Nov 2025', event:'Project formally approved by Group Managing Director (GMD)'},
+      {date:'Nov 2025',    event:'Vendor (hSenid) confirmation completed. Data requests and follow-ups initiated'},
+      {date:'Nov–Dec 2025',event:'Proforma Invoice (PI) requested, received, and approved'},
+      {date:'15 Dec 2025', event:'Purchase Order (PO) processed and issued to hSenid — procurement complete'},
+    ],
+    2:[
+      {date:'30 Apr 2026', event:'Planned delivery deadline for Development & UAT Build', note:'Missed'},
+      {date:'24 Jun 2026', event:'hSenid delivered UAT Build to HRIS team', note:'+55 days late'},
+    ],
+    3:[
+      {date:'24 Jun 2026', event:'UAT commenced upon receipt of system'},
+      {date:'02 Jul 2026', event:'HRIS reported issues — Round 1'},
+      {date:'06 Jul 2026', event:'HRIS reported issues — Round 2'},
+      {date:'08 Jul 2026', event:'HRIS reported issues — Round 3'},
+      {date:'15 Jul 2026', event:'HRIS reported issues — Round 4'},
+      {date:'20 Jul 2026', event:'HRIS reported issues — Round 5'},
+      {date:'23 Jul 2026', event:'First joint UAT session — Business Users & hSenid', note:'Additional gaps & functional issues identified'},
+      {date:'Ongoing',     event:'hSenid addressing reported issues before second UAT round'},
+    ],
+    4:[{date:'30 Jul 2026', event:'Final business validation and sign-off planned after second UAT and issue resolution'}],
+    5:[{date:'01 Aug 2026', event:'Recruitment Enhancement Solution deployment to production environment'}],
+    6:[{date:'15 Aug 2026', event:'Post Go-Live support, issue monitoring, knowledge transfer, and formal project closure'}],
+  };
+
+  const evList = events[m.id] || [];
+
+  document.getElementById('recruitModalBody').innerHTML = `
+    <div class="row g-2 mb-4">
+      ${rows.map(r=>`
+        <div class="col-12 col-sm-6">
+          <div class="glass-card p-2 px-3">
+            <div class="kpi-meta" style="font-size:.68rem;">${r.label}</div>
+            <div style="font-size:.88rem;margin-top:.15rem;">${r.value}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <h6 class="mb-2"><i class="fa-solid fa-timeline me-2" style="color:var(--green);"></i>Key Events</h6>
+    <div style="position:relative;padding-left:1.4rem;">
+      <div style="position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--green),var(--blue),var(--gray));border-radius:2px;"></div>
+      ${evList.map((ev,i)=>`
+        <div style="position:relative;margin-bottom:1rem;">
+          <div style="position:absolute;left:-1.4rem;top:3px;width:12px;height:12px;border-radius:50%;background:${i===evList.length-1?'var(--gray)':'var(--green)'};border:2px solid var(--bg-1);"></div>
+          <div class="mono" style="font-size:.72rem;color:var(--text-2);">${ev.date}</div>
+          <div style="font-size:.86rem;font-weight:500;">${ev.event}</div>
+          ${ev.note?`<div class="status-chip ${ev.note.includes('late')||ev.note==='Missed'?'recruit-tl-delayed':'recruit-tl-progress'}" style="margin-top:.25rem;">${ev.note}</div>`:''}
+          ${ev.ref?`<div class="mono" style="font-size:.72rem;color:var(--purple);margin-top:.2rem;">${ev.ref}</div>`:''}
+        </div>`).join('')}
+    </div>`;
+
+  new bootstrap.Modal(document.getElementById('recruitModal')).show();
+}
+
+/* Recruit go-live countdown */
+const recruitGoLive = new Date("2026-08-01T00:00:00");
+function updateRecruitCountdown(){
+  const el = document.getElementById('recruitCountdown');
+  if(!el) return;
+  const diff = recruitGoLive - new Date();
+  if(diff<=0){ el.textContent='Go-Live reached!'; return; }
+  const d = Math.floor(diff/86400000);
+  el.textContent = d + ' days remaining';
+}
+updateRecruitCountdown();
 
 /* ============== BACK TO TOP ============== */
 const backTop = document.getElementById('backTop');
@@ -1072,6 +1615,9 @@ function exportElement(el, filename){
 }
 document.getElementById('exportPdfBtn').addEventListener('click', ()=>{
   exportElement(document.getElementById('dashboardRoot'), 'BHRL_HRIS_Dashboard.pdf');
+});
+document.getElementById('brownsModalExportBtn').addEventListener('click', ()=>{
+  exportElement(document.querySelector('#brownsMilestoneModal .modal-body'), 'Browns_Board_Approval_Cost.pdf');
 });
 
 /* tooltips */
