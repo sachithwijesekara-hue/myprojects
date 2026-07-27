@@ -377,7 +377,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
       <div class="ps-icon" style="background:var(--green-soft);color:var(--green);"><i class="fa-solid fa-building"></i></div>
       <div class="ps-company">Serendib Leisure Management Ltd</div>
       <div class="ps-title">BHRL HRIS Implementation</div>
-      <div class="ps-meta">PeoplesHR · 65% Complete · Go-Live 03 Aug 2026</div>
+      <div class="ps-meta">PeoplesHR · 75% Complete · UAT BP Testing &amp; Sign-off · Go-Live 03 Aug 2026</div>
       <div class="ps-meta mt-2" style="border-top:1px solid var(--card-border);padding-top:.6rem;color:var(--text-2);">
         <i class="fa-solid fa-hotel me-1"></i> Includes: Browns Hotels &amp; Resorts HRIS (Board Approved 04 Nov 2025 · Pending Kickoff)
       </div>
@@ -452,7 +452,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
                 <circle class="ring-bg" cx="42" cy="42" r="36"></circle>
                 <circle class="ring-fg" id="progressRing" cx="42" cy="42" r="36" stroke-dasharray="226" stroke-dashoffset="226"></circle>
               </svg>
-              <div class="ring-num" style="color:var(--green);">65%</div>
+              <div class="ring-num" style="color:var(--green);">75%</div>
             </div>
           </div>
         </div>
@@ -464,7 +464,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
           <div class="kpi-icon mb-2" style="background:var(--blue-soft);color:var(--blue);"><i class="fa-solid fa-vial"></i></div>
           <div class="kpi-label">Current Phase</div>
           <div class="kpi-value" style="color:var(--blue);font-size:1.2rem;">User Acceptance Testing</div>
-          <div class="kpi-meta">08 Jul 2026 – 10 Jul 2026</div>
+          <div class="kpi-meta">BP Testing &amp; Sign-off Stage</div>
         </div>
       </div>
 
@@ -573,7 +573,7 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
           <span class="status-chip chip-current">Current Phase</span>
           <h5 class="d-inline ms-2 mb-0">5. User Acceptance Testing (UAT)</h5>
         </div>
-        <div class="kpi-meta">Weight 15% · 08/07/2026 – 10/07/2026</div>
+        <div class="kpi-meta">Weight 15% · 08/07/2026 onwards · <strong style="color:var(--blue);">BP Testing &amp; Sign-off In Progress</strong></div>
       </div>
       <div class="accordion searchable" id="uatAccordion"></div>
     </div>
@@ -1021,8 +1021,8 @@ const MILESTONES = [
    activities:["Project kick-off","Project team formation","System installation","Environment setup","Company parameter setup","Master data collection and cleansing","Employee data upload","Organizational structure finalization","Grading structure finalization","Department and designation mapping"]},
   {id:4,name:"Workshops & Configuration",weight:25,start:"2026-05-23",end:"2026-06-19",status:"done",progress:100,
    activities:["Employee Information Management workshop","Employee Life Cycle workshop","Leave Management workshop","Attendance Management workshop","Probation & Contract Evaluation workshop","Workflow and approval hierarchy discussions","User role and security setup","Letter template setup","Organization structure configuration","Grade and designation configuration","Shift and roster configuration","Dashboard and report configuration","Mobile App configuration","Business process validation sessions","Configuration sign-off"]},
-  {id:5,name:"User Acceptance Testing (UAT)",weight:15,start:"2026-07-08",end:"2026-07-10",status:"current",progress:35,
-   activities:["UAT plan preparation","Test scenario preparation","Employee Information Management testing","Employee Life Cycle testing","Leave Management testing","Attendance Management testing","Probation Evaluation testing","Workflow testing","Approval hierarchy validation","ESS and MSS testing","Mobile App testing","Letter generation validation","Report validation","Issue logging","Defect fixing","Retesting","User sign-off","Final UAT sign-off"]},
+  {id:5,name:"User Acceptance Testing (UAT)",weight:15,start:"2026-07-08",end:"2026-07-10",status:"current",progress:75,
+   activities:["hSenid UAT sessions completed","Issues reported & resolved across multiple rounds (08–23 Jul)","First joint UAT session with Business Process owners conducted — 23 Jul","Additional business process gaps & functional issues identified and communicated to hSenid","hSenid currently addressing reported issues","Second UAT round with Business Process owners — In Progress","Business Process owner validation — In Progress","UAT Sign-off — Pending"]},
   {id:6,name:"Go Live",weight:10,start:"2026-08-03",end:"2026-08-03",status:"pending",progress:0,
    activities:["Production environment preparation","Data migration validation","Final parameter verification","User account activation","Production deployment","Go-live support"]},
   {id:7,name:"Live Training & Feedback",weight:10,start:"2026-08-04",end:"2026-08-21",status:"pending",progress:0,
@@ -1174,11 +1174,11 @@ function animateCounter(el,target,suffix=''){
   let cur=0; const step=Math.max(1,target/40);
   const t=setInterval(()=>{cur+=step; if(cur>=target){cur=target;clearInterval(t);} el.textContent=Math.round(cur)+suffix;},25);
 }
-animateCounter(document.getElementById('overallProgressNum'),65,'%');
+animateCounter(document.getElementById('overallProgressNum'),75,'%');
 const ring = document.getElementById('progressRing');
 const circumference = 2*Math.PI*36;
 ring.setAttribute('stroke-dasharray', circumference);
-setTimeout(()=>{ ring.style.strokeDashoffset = circumference - (circumference*0.65); },300);
+setTimeout(()=>{ ring.style.strokeDashoffset = circumference - (circumference*0.75); },300);
 
 /* ============== TIMELINE RENDER ============== */
 const timelineWrap = document.getElementById('timelineWrap');
@@ -1377,7 +1377,7 @@ new Chart(document.getElementById('weightPie'),{
 
 new Chart(document.getElementById('completionDoughnut'),{
   type:'doughnut',
-  data:{labels:['Completed','Remaining'],datasets:[{data:[65,35],backgroundColor:['#27d39a','rgba(255,255,255,0.08)'],borderWidth:0}]},
+  data:{labels:['Completed','Remaining'],datasets:[{data:[75,25],backgroundColor:['#27d39a','rgba(255,255,255,0.08)'],borderWidth:0}]},
   options:{cutout:'72%',plugins:{legend:{position:'bottom'}}}
 });
 
@@ -1386,8 +1386,8 @@ new Chart(document.getElementById('progressBarChart'),{
   data:{
     labels:['Pre-Implementation','Cost Finalization','Data Preparation','Workshops','UAT','Go Live','Closure'],
     datasets:[{
-      data:[100,100,100,100,35,0,0],
-      backgroundColor:[100,100,100,100,35,0,0].map(v=>v===100?'#27d39a':v>0?'#3aa6ff':'#5b6678'),
+      data:[100,100,100,100,75,0,0],
+      backgroundColor:[100,100,100,100,75,0,0].map(v=>v===100?'#27d39a':v>0?'#3aa6ff':'#5b6678'),
       borderRadius:6, barThickness:18
     }]
   },
