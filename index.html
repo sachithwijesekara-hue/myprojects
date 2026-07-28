@@ -889,6 +889,19 @@ footer{color:var(--text-2);font-size:.78rem;border-top:1px solid var(--card-bord
       </div>
     </section>
 
+    <!-- CRITICAL ISSUE ALERT -->
+    <section class="section-pad pt-0">
+      <div class="p-3 p-md-4" style="border-left:3px solid var(--red);background:var(--red-soft);border-radius:var(--radius-lg);">
+        <div class="d-flex align-items-start gap-3 flex-wrap">
+          <div class="kpi-icon" style="background:rgba(255,92,122,.25);color:var(--red);flex-shrink:0;animation:redGlowPulse 2.2s infinite;"><i class="fa-solid fa-bolt"></i></div>
+          <div>
+            <div style="font-weight:700;color:var(--red);font-size:.95rem;">Critical Issue Reported — 27 Jul 2026</div>
+            <div class="kpi-meta mt-1">UAT system not loading — server error encountered. Reported to hSenid immediately. <strong style="color:var(--red);">UAT testing and sign-off currently blocked.</strong> Awaiting urgent resolution from hSenid before the second UAT round can proceed.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- MILESTONE TIMELINE -->
     <section class="section-pad pt-0">
       <div class="eyebrow">Roadmap</div>
@@ -1248,8 +1261,6 @@ document.querySelectorAll('[data-bs-target="#milestoneModal"]').forEach(card=>{
         <div><div class="kpi-meta">Status</div><div class="fw-bold">${STATUS_LABEL[m.status]}</div></div>
         <div><div class="kpi-meta">Dates</div><div class="fw-bold">${fmt(m.start)} – ${fmt(m.end)}</div></div>
       </div>
-      <h6>Activities</h6>
-      <ul>${m.activities.map(a=>`<li>${a}</li>`).join('')}</ul>
       ${summaryHtml}`;
     document.getElementById('modalExportBtn').onclick = ()=>exportElement(document.getElementById('modalBody'), `Milestone_${m.id}_${m.name.replace(/\s+/g,'_')}.pdf`);
   });
@@ -1260,16 +1271,18 @@ function buildAccordion(containerId, sections, prefix){
   const el = document.getElementById(containerId);
   sections.forEach((s,i)=>{
     const itemId = `${prefix}${i}`;
+    const isCritical = s.title.includes('⚠');
     const div = document.createElement('div');
     div.className = "accordion-item searchable";
     div.dataset.search = (s.title+" "+s.date+" "+s.items.join(" ")).toLowerCase();
+    if(isCritical) div.style.cssText='border-color:rgba(255,92,122,.4)!important;';
     div.innerHTML = `
       <h2 class="accordion-header">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${itemId}">
-          <span class="me-2 mono" style="color:var(--text-2);font-size:.78rem;">${s.date}</span> ${s.title}
+        <button class="accordion-button${isCritical?'':' collapsed'}" type="button" data-bs-toggle="collapse" data-bs-target="#${itemId}" style="${isCritical?'color:var(--red)!important;background:var(--red-soft)!important;':''}">
+          <span class="me-2 mono" style="color:${isCritical?'var(--red)':'var(--text-2)'};font-size:.78rem;">${s.date}</span> ${s.title}
         </button>
       </h2>
-      <div id="${itemId}" class="accordion-collapse collapse">
+      <div id="${itemId}" class="accordion-collapse collapse${isCritical?' show':''}">
         <div class="accordion-body"><ul>${s.items.map(it=> it.startsWith('Required:') ? `<li style="list-style:none;margin-left:-1.2rem;margin-top:.5rem;"><span class="status-chip" style="background:var(--blue-soft);color:var(--blue);">${it.replace('Required: ','')}</span></li>` : `<li>${it}</li>`).join('')}</ul></div>
       </div>`;
     el.appendChild(div);
@@ -1555,7 +1568,8 @@ function openRecruitModal(m){
       {date:'15 Jul 2026', event:'HRIS reported issues — Round 4'},
       {date:'20 Jul 2026', event:'HRIS reported issues — Round 5'},
       {date:'23 Jul 2026', event:'First joint UAT session — Business Users & hSenid', note:'Additional gaps & functional issues identified'},
-      {date:'Ongoing',     event:'hSenid addressing reported issues before second UAT round'},
+      {date:'27 Jul 2026', event:'⚠ Critical: UAT system not loading — server error reported to hSenid', note:'Blocking — Pending resolution'},
+      {date:'Ongoing',     event:'hSenid addressing all reported issues before second UAT round'},
     ],
     4:[{date:'30 Jul 2026', event:'Final business validation and sign-off planned after second UAT and issue resolution'}],
     5:[{date:'01 Aug 2026', event:'Recruitment Enhancement Solution deployment to production environment'}],
